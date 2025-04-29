@@ -1,0 +1,39 @@
+.v-card-actions {
+  display: inline !important;
+}
+.v-col-md-2 {
+  flex: 0 0 16.6666666667%;
+  max-width: 50%;
+}
+.v-chip.v-chip--size-small {
+  padding: 0 16px;
+}
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+.menu {
+  width: 65%;
+}
+.showinlowresolution {
+  visibility: hidden;
+}
+.centerstuff {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+@media only screen and (max-width: 650px) {
+  .menu {
+    width: 100%;
+  }
+  .ticket {
+    visibility: hidden;
+    display: none;
+  }
+  .showinlowresolution {
+    visibility: visible;
+  }
+}

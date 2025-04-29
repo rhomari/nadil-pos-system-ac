@@ -1,0 +1,13 @@
+{
+    "files": [
+        {
+            "url": "http://localhost:2304/nadil-pos.apk",
+            "destination": "C:\\NADIL-POS\\nadil-pos.apk"
+           
+        },
+        {
+            "url": "http://localhost:2304/favicon.ico",
+            "destination": "C:\\NADIL-POS\\favicon.ico"
+        }
+    ]
+}
