@@ -2,8 +2,8 @@
 setlocal
 
 
-set "source=D:\Projects\nadil-pos-system-ac\dist"
-set "destination=D:\Projects\nadil-pos-system-ac\nadil-pos-backend\static"
+set "source=D:\Projects\alpha-connect-manager\backend\nadil-pos-system-ac\dist"
+set "destination=D:\Projects\alpha-connect-manager\backend\nadil-pos-system-ac\nadil-pos-backend\static"
 set "jsFolder=%destination%\js"
 
 

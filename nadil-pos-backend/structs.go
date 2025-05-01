@@ -7,12 +7,14 @@ type Category struct {
 	Category_name string `json:"categoryname"`
 }
 type Product struct {
-	Productid  int    `json:"productid"`
-	Isfavorite bool   `json:"isfavorite"`
-	Name       string `json:"text"`
-	Category   int    `json:"category"`
-	Image      string `json:"image"`
-	Price      string `json:"price"`
+	Productid           int     `json:"productid"`
+	Isfavorite          bool    `json:"isfavorite"`
+	Name                string  `json:"text"`
+	Category            int     `json:"category"`
+	Image               string  `json:"image"`
+	Price               string  `json:"price"`
+	Subscriberprice     *string `json:"subscriberprice"`
+	Goldsubscriberprice *string `json:"goldsubscriberprice"`
 }
 type Response struct {
 	Prefix  string `json:"Prefix"`

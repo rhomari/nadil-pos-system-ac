@@ -236,7 +236,7 @@
             <v-list-subheader style="font-weight: bolder; width: 100%">
               Ticket N° : {{ ticketnumber }}
             </v-list-subheader>
-            <v-list-subheader style="font-weight: bolder; width: 100%" v-if="subscriberInfos?.name">
+            <v-list-subheader style="font-weight: bolder; width: 100%" v-if="subscriberInfos?.name" >
               Nom de l'abonné(e) : {{ subscriberInfos.name }}
               <v-icon v-if="subscriberInfos?.isGold" color="amber-darken-2" size="small" class="ml-2">mdi-crown</v-icon>
             </v-list-subheader>
@@ -1593,7 +1593,7 @@
 </template>
 
 <script setup>
-import { filtredMenu, getSortedFiltredMenu, initSortable } from "./Utils";  
+import { filtredMenu, getSortedFiltredMenu, initSortable, store } from "./Utils";  
 import { ref, onMounted, reactive, watch} from "vue";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -1694,11 +1694,11 @@ watch(valdiationbuttonstate, (newValue) => {
   if (newValue === false) {
    
     enableRFIDReading();
-    console.log("RFID reading enabled due to validation button state change");
+    
   } else {
     
     disableRFIDReading();
-    console.log("RFID reading disabled due to validation button state change");
+    
   }
 });
 async function savePrintingProfile(){
@@ -2003,10 +2003,12 @@ async function saveGeneralInformations(){
 }
 function emptyTicketTwo(){
   subscriberInfos.value = null
+  store.Member=null
 }
 
 function newTicketTwo(){
   subscriberInfos.value = null
+  store.Member=null
   if (loggeduser.value.Role=="Gérant")
     selectedwaiter.value=''
   
@@ -2520,11 +2522,13 @@ const getSubscriberFromACM = async (rfid) => {
         if (response.data.hasValidSubscription == false){
           alertHandlerTwo({Prefix:"ERROR", Message: "Abonnement non valide", data:""})
           subscriberInfos.value = null;
+          store.Member = null;
           return
         }
        
         alertHandlerTwo({Prefix:"SUCCESS", Message: "Abonnement valide", data:""})
         subscriberInfos.value = response.data;
+        store.Member = response.data;
        
         
         
@@ -2750,7 +2754,7 @@ function getMenuDisabled(btnvalidatedisabled, ticketvalidate,sessionend, isadmin
 }
 </script>
 <script>
-import { getHostName, filtredMenu, initSortable, getSortedFiltredMenu, onUpdatefocused} from "./Utils";
+import { getHostName, filtredMenu, initSortable, getSortedFiltredMenu, onUpdatefocused, store} from "./Utils";
 import OrderContentComponent from "./components/OrderContentComponent.vue";
 import ManageUsersDialogComponent from "./components/ManageUsersDialogComponent.vue";
 import EditUsersDialogComponent from "./components/EditUsersDialogComponent.vue";
@@ -2814,6 +2818,7 @@ export default {
       selectedcategoryID: -1,
       currentelement: null,
       count: 0,
+     
    
       categories: [],
       menu: [],
@@ -2822,6 +2827,11 @@ export default {
         { content: [], number: "", totalticket: 0, waiter: ''}
       ],
     };
+  },
+  computed: {
+    store() {
+      return store // make it available in template and watchers
+    }
   },
   watch: {
     tab: async function (val) {
@@ -2835,6 +2845,21 @@ export default {
 
       this.showElements(this.selectedcategory.categoryid);
     
+    },
+   
+   'store.Member': {
+      handler(val) {
+        if (val != null) {
+          console.log('Options API watch:', val)
+          this.ticket[0].content.forEach(c => {
+          
+            c.price = this.selectPrice(this.menu.find(m => m.productid == c.id))
+          })
+          this.updateTotalTicket()
+        }
+      },
+      immediate: true,
+      deep: true
     },
     ticket: {
       handler: function (val) {
@@ -2956,7 +2981,7 @@ export default {
     updateTotalTicket() {
       this.ticket[0].totalticket = 0;
       this.ticket[0].content.forEach((c) => {
-        this.ticket[0].totalticket += c.count * c.price;
+        this.ticket[0].totalticket += c.count * this.selectPrice(this.menu.find(m => m.productid == c.id));
       });
     },
     validateInput() {
@@ -3033,6 +3058,7 @@ export default {
         })
         .then((data) => {
           this.menu = data; 
+          
          
         })
         .catch((e) => console.log(e));
@@ -3048,6 +3074,18 @@ export default {
         })
         .catch((e) => console.log(e));
     },
+    selectPrice: function (el) {
+      console.log('selectPrice', el)
+      if (store.Member == null) {
+        return parseFloat(el?.price);
+        
+      }
+      if (store.Member?.isGold){
+     
+        return el.goldsubscriberprice ? parseFloat(el?.goldsubscriberprice): parseFloat(el?.price);
+      }
+      return el?.subscriberprice ? parseFloat(el?.subscriberprice): parseFloat(el?.price);
+    },
 
     elementClick: function (el) {
       
@@ -3059,7 +3097,7 @@ export default {
       }
       let found = false;
       this.ticket[0].totalticket =
-        this.ticket[0].totalticket + parseFloat(el.price);
+        this.ticket[0].totalticket + this.selectPrice(el);
       
       this.ticket[0].content.forEach((e) => {
         if (e.id == el.productid) {
@@ -3073,7 +3111,7 @@ export default {
           id: el.productid,
           count: 1,
           text: el.text,
-          price: parseFloat(el.price),
+          price: this.selectPrice(el),
           categoryid : el.category,
           comment: "",
         });

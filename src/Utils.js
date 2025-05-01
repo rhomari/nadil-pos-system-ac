@@ -1,4 +1,4 @@
-import { ref, nextTick} from "vue";
+import { ref, nextTick, reactive} from "vue";
 import Sortable from "sortablejs";
 export function getHostName() {
   if (process.env.NODE_ENV !== "development")
@@ -8,6 +8,10 @@ export function getHostName() {
 
 let sortableInstances = []; 
 
+
+export const store = reactive({
+  Member: null
+})
 export let ticketOK = false;
 export const filtredMenu=ref([])
 export  const initSortable = (id) => {
