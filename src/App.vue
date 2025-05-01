@@ -1278,6 +1278,7 @@
                       key: 'number',
                     },
                     { title: 'Serveur', key: 'waiter' },
+
                     {title:'Initiateur', key:'creator'},
                     { title: 'Date et heure', key: 'creationdate' },
                     {title:'Etat', key:'status'},
@@ -2299,6 +2300,7 @@ async function getOrders(){
        
 
     })
+    console.log(orders.value)
     
     
     
@@ -2824,7 +2826,7 @@ export default {
       menu: [],
      
       ticket: [
-        { content: [], number: "", totalticket: 0, waiter: ''}
+        { content: [], number: "", totalticket: 0, waiter: '', member: '', memberid: '' },
       ],
     };
   },
@@ -2850,12 +2852,14 @@ export default {
    'store.Member': {
       handler(val) {
         if (val != null) {
-          console.log('Options API watch:', val)
+          this.ticket[0].member = val?.name;
+          this.ticket[0].memberid = val?.subscriberId;
           this.ticket[0].content.forEach(c => {
           
             c.price = this.selectPrice(this.menu.find(m => m.productid == c.id))
           })
           this.updateTotalTicket()
+          console.log(this.ticket[0])
         }
       },
       immediate: true,
@@ -2922,6 +2926,7 @@ export default {
       this.ticket[0].totalticket = 0;
       this.ticketvalidate = false;
       this.ticketnumber = "";
+      
       document.body.focus()
     },
     emptyTicket() {
@@ -2950,6 +2955,8 @@ export default {
       form.append("waiter", this.ticket[0].waiter);
       form.append("creator", creator)
       form.append("content", JSON.stringify(this.ticket[0].content));
+      form.append("member", this.ticket[0].member);
+      form.append("memberid", this.ticket[0].memberid);
 
       await fetch("https://" + hostname + "/saveTicket", {
         method: "post",

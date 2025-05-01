@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type Category struct {
 	Category_id   int    `json:"categoryid"`
@@ -57,13 +60,15 @@ type UserInfos struct {
 	Code     string
 }
 type Order struct {
-	Number       int       `json:"number"`
-	Totalticket  float64   `json:"totalticket"`
-	Waiter       string    `json:"waiter"`
-	Content      string    `json:"content"`
-	Creator      string    `json:"creator"`
-	Status       string    `json:"status"`
-	Creationdate time.Time `json:"creationdate"`
+	Number       int             `json:"number"`
+	Totalticket  float64         `json:"totalticket"`
+	Waiter       string          `json:"waiter"`
+	Content      json.RawMessage `json:"content"`
+	Creator      string          `json:"creator"`
+	Status       string          `json:"status"`
+	Creationdate time.Time       `json:"creationdate"`
+	Member       string          `json:"member"`
+	MemberID     string          `json:"memberid"`
 }
 type GeneralSettings struct {
 	Posname  string `json:"posname"`

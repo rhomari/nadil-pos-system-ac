@@ -818,14 +818,14 @@ func (server *Server) getOrders(w http.ResponseWriter, r *http.Request) {
 	endtime := r.FormValue("endtime")
 
 	if role == "Serveur" {
-		rows, err = server.DATABASE.Query("SELECT * FROM orders WHERE waiter=$1 AND (creationdate BETWEEN $2 AND $3) ORDER BY number;", username, startdate+" "+starttime, enddate+" "+endtime)
+		rows, err = server.DATABASE.Query("SELECT number, totalticket, waiter, content, creator, status, creationdate, member, memberid FROM orders WHERE waiter=$1 AND (creationdate BETWEEN $2 AND $3) ORDER BY number;", username, startdate+" "+starttime, enddate+" "+endtime)
 		if err != nil {
 			log.Println(err)
 			return
 		}
 	}
 	if role == "Gérant" {
-		rows, err = server.DATABASE.Query("SELECT * FROM orders WHERE creationdate BETWEEN $1 AND $2 ORDER BY number;", startdate+" "+starttime, enddate+" "+endtime)
+		rows, err = server.DATABASE.Query("SELECT number, totalticket, waiter, content, creator, status, creationdate, member, memberid FROM orders WHERE creationdate BETWEEN $1 AND $2 ORDER BY number;", startdate+" "+starttime, enddate+" "+endtime)
 		if err != nil {
 			log.Println(err)
 			return
@@ -835,15 +835,12 @@ func (server *Server) getOrders(w http.ResponseWriter, r *http.Request) {
 	var order Order
 	var orders []Order
 	for rows.Next() {
-
-		err = rows.Scan(&order.Number, &order.Totalticket, &order.Waiter, &order.Content, &order.Creator, &order.Status, &order.Creationdate)
+		err = rows.Scan(&order.Number, &order.Totalticket, &order.Waiter, &order.Content, &order.Creator, &order.Status, &order.Creationdate, &order.Member, &order.MemberID)
 		if err != nil {
 			log.Println(err)
 			return
-
 		}
 		orders = append(orders, order)
-
 	}
 	w.Header().Set("Content-Type", "application/json")
 	jsonresponse, err := json.Marshal(orders)
@@ -851,7 +848,6 @@ func (server *Server) getOrders(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	w.Write(jsonresponse)
-
 }
 func (server *Server) openSession(w http.ResponseWriter, r *http.Request) {
 	setHeaders(w)
@@ -1114,10 +1110,12 @@ func (server *Server) saveTicket(w http.ResponseWriter, r *http.Request) {
 	totalticket := r.FormValue("totalticket")
 	waiter := r.FormValue("waiter")
 	creator := r.FormValue("creator")
+	member := r.FormValue("member")
+	memberid := r.FormValue("memberid")
 
 	var number int
-	if err := server.DATABASE.QueryRow("INSERT INTO orders (totalticket,waiter,content,creator,creationdate,status) VALUES($1,$2,$3,$4,$5,$6) RETURNING number;",
-		totalticket, waiter, jsonorder, creator, time.Now().Format(time.RFC3339), "IMPAYE").Scan(&number); err != nil {
+	if err := server.DATABASE.QueryRow("INSERT INTO orders (totalticket,waiter,content,creator,creationdate,status,member,memberid) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING number;",
+		totalticket, waiter, jsonorder, creator, time.Now().Format(time.RFC3339), "IMPAYE", member, memberid).Scan(&number); err != nil {
 		log.Println(err)
 		return
 	}
@@ -1506,7 +1504,8 @@ func formatReceipt(order Order, profile PrintingProfile) []byte {
 	boldOn := []byte{0x1B, 0x45, 0x01}
 	boldOff := []byte{0x1B, 0x45, 0x00}
 	var OrderContent []OrderContent
-	err = json.Unmarshal([]byte(order.Content), &OrderContent)
+
+	err = json.Unmarshal(order.Content, &OrderContent)
 	if err != nil {
 		log.Println(err)
 	}

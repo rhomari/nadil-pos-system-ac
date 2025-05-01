@@ -21,7 +21,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in JSON.parse(order.content)" :key="item.id" >
+        <tr v-for="item in order.content" :key="item.id" >
           <td>{{item.text}}</td>
           <td>{{item.count}}</td>
           <td style="text-align:right">{{item.price.toFixed(2)}}</td>
