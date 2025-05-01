@@ -2852,6 +2852,7 @@ export default {
    'store.Member': {
       handler(val) {
         if (val != null) {
+          console.log(val)
           this.ticket[0].member = val?.name;
           this.ticket[0].memberid = val?.subscriberId;
           this.ticket[0].content.forEach(c => {
@@ -3082,14 +3083,18 @@ export default {
         .catch((e) => console.log(e));
     },
     selectPrice: function (el) {
-      console.log('selectPrice', el)
+      
       if (store.Member == null) {
         return parseFloat(el?.price);
         
       }
-      if (store.Member?.isGold){
+      if (store.Member?.isGold && store.Member?.remainingConsumables>0){
+        
+        return el?.goldsubscriberprice ? parseFloat(el?.goldsubscriberprice): parseFloat(el?.price);
+       
+        
      
-        return el.goldsubscriberprice ? parseFloat(el?.goldsubscriberprice): parseFloat(el?.price);
+       
       }
       return el?.subscriberprice ? parseFloat(el?.subscriberprice): parseFloat(el?.price);
     },
