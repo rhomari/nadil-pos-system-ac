@@ -1,66 +1,66 @@
 /* eslint-disable */
 <template>
-  
- 
-
   <v-responsive class="border rounded no-select">
     <div class="text-center">
-   
-
-    <v-overlay  v-if="authenticated==false" v-model="overlay" persistent :style="getOverlayStyle()">
-    
-    </v-overlay>
-    <auth-num-pad-component v-if="authenticated==false"  class="centerstuff"  @auth-ok="authOK"></auth-num-pad-component>
-    
-  </div>
+      <v-overlay
+        v-if="authenticated == false"
+        v-model="overlay"
+        persistent
+        :style="getOverlayStyle()"
+      >
+      </v-overlay>
+      <auth-num-pad-component
+        v-if="authenticated == false"
+        class="centerstuff"
+        @auth-ok="authOK"
+      ></auth-num-pad-component>
+    </div>
     <v-app :theme="theme">
       <v-app-bar :elevation="4" density="compact">
         <v-menu>
-      <template v-slot:activator="{ props }">
-        <v-btn
-          style="font-size:10px"
-          color="primary"
-          v-bind="props"
-        >
-          Thème
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item
-          v-for="(t, index) in themes"
-          :key="index"
-          style="cursor:default"
-          @click="changeTheme(t.title)"
-        >
-          <v-list-item-title style="font-size:12px; font-weight:bold">{{ t.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+          <template v-slot:activator="{ props }">
+            <v-btn style="font-size: 10px" color="primary" v-bind="props"> Thème </v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="(t, index) in themes"
+              :key="index"
+              style="cursor: default"
+              @click="changeTheme(t.title)"
+            >
+              <v-list-item-title style="font-size: 12px; font-weight: bold">{{
+                t.title
+              }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
         <template v-slot:prepend>
           <v-app-bar-nav-icon @click="showMenu"></v-app-bar-nav-icon>
         </template>
 
         <v-app-bar-title>Nadil-POS AC</v-app-bar-title>
         <template v-if="authenticated" v-slot:append>
-          <span ref="authuser">{{loggeduser.Username.toUpperCase()}}</span>
-          
-          <v-btn  @click="authOff();logout()"> <v-icon size="18px">mdi-logout</v-icon></v-btn>
-          <v-btn value="quit" @click="minimizeApp()" style="width: 48px;" class="NOMOBILE">
-          <v-icon>mdi-window-minimize</v-icon>
+          <span ref="authuser">{{ loggeduser.Username.toUpperCase() }}</span>
 
-          
-        </v-btn>
-          <v-btn value="quit" color="red" @click="quitApp()" style="width: 48px;" >
-          <v-icon size="24px">mdi-power</v-icon>
-
-          
-        </v-btn>
+          <v-btn
+            @click="
+              authOff();
+              logout();
+            "
+          >
+            <v-icon size="18px">mdi-logout</v-icon></v-btn
+          >
+          <v-btn value="quit" @click="minimizeApp()" style="width: 48px" class="NOMOBILE">
+            <v-icon>mdi-window-minimize</v-icon>
+          </v-btn>
+          <v-btn value="quit" color="red" @click="quitApp()" style="width: 48px">
+            <v-icon size="24px">mdi-power</v-icon>
+          </v-btn>
         </template>
       </v-app-bar>
 
       <v-main>
         <v-container>
-    
           <v-card
             class="menu"
             style="float: left; overflow: auto; max-height: 80vh; height: 80vh"
@@ -108,10 +108,7 @@
                       </v-list-item>
                       <v-list-item>
                         <v-list-item-title @click="editCategory(cat)"
-                          ><v-icon
-                            icon="mdi-pencil"
-                            style="margin-right: 15px"
-                          ></v-icon
+                          ><v-icon icon="mdi-pencil" style="margin-right: 15px"></v-icon
                           >Editer</v-list-item-title
                         >
                       </v-list-item>
@@ -129,105 +126,140 @@
             <v-tabs-window v-model="tab" id="menuwindow">
               <v-tabs-window-item v-for="n in 24" :key="n" :value="n">
                 <v-container fluid style="text-align: center">
-    <v-row ref="sortableContainer" class="sortable-grid">
-      <v-col
-        v-for="(element, index) in filtredMenu"
-        :key="element.text"
-        cols="12"
-        md="2"
-        class="sortable-item"
-        :data-index="index"
-      >
-        <v-card
-          :disabled="getMenuDisabled(btnvalidatedisabled, ticketvalidate, sessionsmap.get(loggeduser?.Username), isadmin, managerauthorisations, selectedwaiter)"
-          style="background-color: transparent; line-height: 3mm"
-          @click="elementClick(element)"
-          :elevation="5"
-          class="card-element"
-          rounded="lg"
-        >
-        <v-menu activator="parent">
-            <v-list v-if="isadmin">
-              <v-list-item>
-                <v-list-item-title
-                  @click="deleteProduct(element)"
-                  style="font-size: 14px"
-                >
-                  <v-icon
-                    icon="mdi-trash-can"
-                    style="margin-right: 5px; font-size: 14px; color: orangered"
-                  ></v-icon>
-                  Supprimer
-                </v-list-item-title>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-title
-                  @click="editelement = element;openEditProductDialog();"
-                  style="font-size: 14px"
-                  
-                >
-                  <v-icon
-                    icon="mdi-pencil"
-                    style="margin-right: 5px; font-size: 14px; color: darkgreen"
-                  ></v-icon>
-                  Editer
-                </v-list-item-title>
-               
-              </v-list-item>
-              <v-list-item v-if="selectedcategory.categoryid>0" >
-                <v-list-item-title
-                 
-                  style="font-size: 14px"
-                >
-                  <v-icon
-                    icon="mdi-pencil"
-                    style="margin-right: 5px; font-size: 14px; color: darkgreen"
-                  ></v-icon>
-                 Catégorie
-                </v-list-item-title>
-                <v-menu  activator="parent" submenu location="end">
-                    <v-list>
-                      <v-list-item v-for="cat in categories" :key="cat.categoryid" link @click="changeProductCategory(element, cat, selectedcategory.categoryid); ">
-                        <v-list-item-title :class="element.category== cat.categoryid ? 'highlighted' : null">{{cat.categoryname}}</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                   
-                  </v-menu>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-          <v-img
-            :src="getImageURL(element.image)"
-            class="card-element-image"
-            rounded="lg"
-            cover
-          ></v-img>
-          <label class="card-label" style="font-size: 11px">{{ element.text }}
-            
-          </label>
-          
-        </v-card>
-      </v-col>
-      <v-col>
-      <div class="d-flex flex-wrap ga-2">
-        <v-card
-          v-if="isadmin && tab != 0"
-          @click="openAddProductDialog"
-          style="background-color: transparent; line-height: 3mm; vertical-align: center"
-          :elevation="10"
-          class="card-element-no-drag"
-          
-          rounded="lg"
-        >
-          <v-icon size="48" style="margin-top: 50px">mdi-plus</v-icon>
-        </v-card>
-      </div>
-    </v-col>
-    </v-row>
-
-    
-    
-  </v-container>
+                  <v-row ref="sortableContainer" class="sortable-grid">
+                    <v-col
+                      v-for="(element, index) in filtredMenu"
+                      :key="element.text"
+                      cols="12"
+                      md="2"
+                      class="sortable-item"
+                      :data-index="index"
+                    >
+                      <v-card
+                        :disabled="
+                          getMenuDisabled(
+                            btnvalidatedisabled,
+                            ticketvalidate,
+                            sessionsmap.get(loggeduser?.Username),
+                            isadmin,
+                            managerauthorisations,
+                            selectedwaiter
+                          )
+                        "
+                        style="background-color: transparent; line-height: 3mm"
+                        @click="elementClick(element)"
+                        :elevation="5"
+                        class="card-element"
+                        rounded="lg"
+                      >
+                        <v-menu activator="parent">
+                          <v-list v-if="isadmin">
+                            <v-list-item>
+                              <v-list-item-title
+                                @click="deleteProduct(element)"
+                                style="font-size: 14px"
+                              >
+                                <v-icon
+                                  icon="mdi-trash-can"
+                                  style="
+                                    margin-right: 5px;
+                                    font-size: 14px;
+                                    color: orangered;
+                                  "
+                                ></v-icon>
+                                Supprimer
+                              </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item>
+                              <v-list-item-title
+                                @click="
+                                  editelement = element;
+                                  openEditProductDialog();
+                                "
+                                style="font-size: 14px"
+                              >
+                                <v-icon
+                                  icon="mdi-pencil"
+                                  style="
+                                    margin-right: 5px;
+                                    font-size: 14px;
+                                    color: darkgreen;
+                                  "
+                                ></v-icon>
+                                Editer
+                              </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item v-if="selectedcategory.categoryid > 0">
+                              <v-list-item-title style="font-size: 14px">
+                                <v-icon
+                                  icon="mdi-pencil"
+                                  style="
+                                    margin-right: 5px;
+                                    font-size: 14px;
+                                    color: darkgreen;
+                                  "
+                                ></v-icon>
+                                Catégorie
+                              </v-list-item-title>
+                              <v-menu activator="parent" submenu location="end">
+                                <v-list>
+                                  <v-list-item
+                                    v-for="cat in categories"
+                                    :key="cat.categoryid"
+                                    link
+                                    @click="
+                                      changeProductCategory(
+                                        element,
+                                        cat,
+                                        selectedcategory.categoryid
+                                      )
+                                    "
+                                  >
+                                    <v-list-item-title
+                                      :class="
+                                        element.category == cat.categoryid
+                                          ? 'highlighted'
+                                          : null
+                                      "
+                                      >{{ cat.categoryname }}</v-list-item-title
+                                    >
+                                  </v-list-item>
+                                </v-list>
+                              </v-menu>
+                            </v-list-item>
+                          </v-list>
+                        </v-menu>
+                        <v-img
+                          :src="getImageURL(element.image)"
+                          class="card-element-image"
+                          rounded="lg"
+                          cover
+                        ></v-img>
+                        <label class="card-label" style="font-size: 11px"
+                          >{{ element.text }}
+                        </label>
+                      </v-card>
+                    </v-col>
+                    <v-col>
+                      <div class="d-flex flex-wrap ga-2">
+                        <v-card
+                          v-if="isadmin && tab != 0"
+                          @click="openAddProductDialog"
+                          style="
+                            background-color: transparent;
+                            line-height: 3mm;
+                            vertical-align: center;
+                          "
+                          :elevation="10"
+                          class="card-element-no-drag"
+                          rounded="lg"
+                        >
+                          <v-icon size="48" style="margin-top: 50px">mdi-plus</v-icon>
+                        </v-card>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-tabs-window-item>
             </v-tabs-window>
           </v-card>
@@ -236,9 +268,18 @@
             <v-list-subheader style="font-weight: bolder; width: 100%">
               Ticket N° : {{ ticketnumber }}
             </v-list-subheader>
-            <v-list-subheader style="font-weight: bolder; width: 100%" v-if="subscriberInfos?.name" >
-              Nom de l'abonné(e) : {{ subscriberInfos.name }}
-              <v-icon v-if="subscriberInfos?.isGold" color="amber-darken-2" size="small" class="ml-2">mdi-crown</v-icon>
+            <v-list-subheader
+              style="font-weight: bolder; width: 100%"
+              v-if="store.Member"
+            >
+              Nom de l'abonné(e) : {{ store.Member.name }}
+              <v-icon
+                v-if="store.Member.isGold"
+                color="amber-darken-2"
+                size="small"
+                class="ml-2"
+                >mdi-crown</v-icon
+              >
             </v-list-subheader>
             <v-list style="max-height: 40vh; overflow-y: auto" id="listticket">
               <v-divider></v-divider>
@@ -260,7 +301,7 @@
                   <v-btn
                     key="1"
                     icon="mdi-comment-text"
-                    style="color:mediumslateblue; background-color: yellow;"
+                    style="color: mediumslateblue; background-color: yellow"
                     size="small"
                     @click="showComment(e)"
                   ></v-btn>
@@ -291,7 +332,7 @@
                     icon="mdi-dialpad"
                     color="orangered"
                     size="small"
-                    style="color: white !important; background-color:grey !important;"
+                    style="color: white !important; background-color: grey !important"
                     @click="showPad(e)"
                   ></v-btn>
                 </v-speed-dial>
@@ -299,11 +340,7 @@
                   <label style="margin-left: 10px">{{ e.text }}</label>
                   <span
                     size="small"
-                    style="
-                      float: right;
-                      margin-right: 10px;
-                      align-content: center;
-                    "
+                    style="float: right; margin-right: 10px; align-content: center"
                     variant="elevated"
                     color="primary"
                     >{{ (e.count * parseFloat(e.price)).toFixed(2) }}</span
@@ -313,7 +350,23 @@
             </v-list>
             <v-divider></v-divider>
             <div style="height: 30px; margin-top: 5px">
-              <label style="float: left; padding-left: 5px">Total : </label>
+
+<label style="float: left; padding-left: 5px">Réduction  </label>
+<span
+  style="
+    float: right;
+    margin-right: 10px;
+    color: whitesmoke !important  ;
+    font-size: 16px;
+  "
+  variant="elevated"
+  color="orange"
+  >-{{ parseFloat(ticket[0].discount).toFixed(2) || 0.00.toFixed(2) }}</span
+>
+</div>
+            <div style="height: 30px; margin-top: 5px">
+
+              <label style="float: left; padding-left: 5px">Total </label>
               <span
                 style="
                   float: right;
@@ -327,7 +380,7 @@
               >
             </div>
             <v-divider></v-divider>
-            
+
             <div
               style="
                 height: 140px;
@@ -339,7 +392,10 @@
             >
               <v-btn
                 style="background-color: chocolate; float: left; width: 45%"
-                v-on:click="emptyTicket(); emptyTicketTwo()"
+                v-on:click="
+                  emptyTicket();
+                  emptyTicketTwo();
+                "
                 :disabled="btnvalidatedisabled && !ticketvalidate"
               >
                 vider</v-btn
@@ -352,15 +408,14 @@
                 Valider</v-btn
               >
               <v-btn
-              v-on:click="printReceipt(securitysettings, authOff)"
-              style="
+                v-on:click="printReceipt(securitysettings, authOff)"
+                style="
                   background-color: darkolivegreen;
                   float: right;
                   width: 45%;
                   margin-top: 5px;
                 "
                 :disabled="ticketvalidate"
-                
               >
                 Imprimer</v-btn
               >
@@ -374,9 +429,11 @@
                   float: bottom;
                 "
                 :disabled="!btnvalidatedisabled"
-                v-on:click="newTicket(); newTicketTwo()"
+                v-on:click="
+                  newTicket();
+                  newTicketTwo();
+                "
                 id="newticketbutton"
-                
               >
                 Nouveau ticket</v-btn
               >
@@ -394,36 +451,37 @@
           </v-card>
         </v-container>
       </v-main>
-      <v-bottom-navigation >
-                                                
-        <v-btn value="Administrer" @click="showadminlogin(authOff)"  v-if="loggeduser?.Role=='Gérant' || loggeduser?.Username=='SETUP'" class="bottomnavbutton">
-          <v-icon ref="adminicon" :class="adminclass">{{
-            adminloginicon
-          }}</v-icon>
+      <v-bottom-navigation>
+        <v-btn
+          value="Administrer"
+          @click="showadminlogin(authOff)"
+          v-if="loggeduser?.Role == 'Gérant' || loggeduser?.Username == 'SETUP'"
+          class="bottomnavbutton"
+        >
+          <v-icon ref="adminicon" :class="adminclass">{{ adminloginicon }}</v-icon>
           <span s>Admin</span>
         </v-btn>
         <v-btn value="session" @click="changeSessionStatus()" class="bottomnavbutton">
           <v-icon ref="session_icon" :class="sessionstatusclass">{{
             sessionstatusicon
           }}</v-icon>
-         
-          <span >{{sessionstatustext}}</span>
+
+          <span>{{ sessionstatustext }}</span>
         </v-btn>
         <v-btn value="orderslist" @click="showOrdersList()" class="bottomnavbutton">
-          <v-icon ref="orderslist" >mdi-format-list-bulleted</v-icon>
-          <span >Commandes</span>
+          <v-icon ref="orderslist">mdi-format-list-bulleted</v-icon>
+          <span>Commandes</span>
         </v-btn>
 
         <v-btn value="Situation" @click="showSituation()" class="bottomnavbutton">
-          <v-icon  >mdi-cash</v-icon>
-          <span >Situation</span>
+          <v-icon>mdi-cash</v-icon>
+          <span>Situation</span>
         </v-btn>
-        <v-btn value="vkeyboard" @click="showVirtualkeyBoard()" class="NOMOBILE" >
+        <v-btn value="vkeyboard" @click="showVirtualkeyBoard()" class="NOMOBILE">
           <v-icon>mdi-keyboard</v-icon>
 
-          <span >Clavier virtuel</span>
+          <span>Clavier virtuel</span>
         </v-btn>
-       
 
         <v-btn
           value="Ticket"
@@ -434,7 +492,6 @@
 
           <span>Ticket</span>
         </v-btn>
-       
       </v-bottom-navigation>
       <v-card>
         <v-navigation-drawer
@@ -467,7 +524,7 @@
               prepend-icon="mdi-printer-settings"
               title="Gestion de l'impression"
               value="printingmanagement"
-              @click="printingmanagementsheet = ! printingmanagementsheet"
+              @click="printingmanagementsheet = !printingmanagementsheet"
             ></v-list-item>
           </v-list>
         </v-navigation-drawer>
@@ -491,14 +548,44 @@
                     Pramètres généraux
                   </v-expansion-panel-title>
                   <v-expansion-panel-text>
-                    
-                    <v-text-field clearable v-model="generalsettings.posname" label="Intitulé du point de vent" variant="solo" dense  @focus="onUpdatefocused"></v-text-field>
-                    <v-text-field clearable v-model="generalsettings.address" label="Adresse" variant="solo" dense  @focus="onUpdatefocused"></v-text-field>
-                    <v-text-field clearable label="Téléphone" v-model="generalsettings.phone" variant="solo" dense  @focus="onUpdatefocused"></v-text-field>
-                    <v-text-field clearable label="Code WIFI" v-model="generalsettings.wificode" variant="solo" dense  @focus="onUpdatefocused"></v-text-field>
-                    <v-btn text="Enregister" v-on:click="saveGeneralInformations()" style="color:darkcyan; margin-left:65%" ></v-btn>
-                    
-                 </v-expansion-panel-text>
+                    <v-text-field
+                      clearable
+                      v-model="generalsettings.posname"
+                      label="Intitulé du point de vent"
+                      variant="solo"
+                      dense
+                      @focus="onUpdatefocused"
+                    ></v-text-field>
+                    <v-text-field
+                      clearable
+                      v-model="generalsettings.address"
+                      label="Adresse"
+                      variant="solo"
+                      dense
+                      @focus="onUpdatefocused"
+                    ></v-text-field>
+                    <v-text-field
+                      clearable
+                      label="Téléphone"
+                      v-model="generalsettings.phone"
+                      variant="solo"
+                      dense
+                      @focus="onUpdatefocused"
+                    ></v-text-field>
+                    <v-text-field
+                      clearable
+                      label="Code WIFI"
+                      v-model="generalsettings.wificode"
+                      variant="solo"
+                      dense
+                      @focus="onUpdatefocused"
+                    ></v-text-field>
+                    <v-btn
+                      text="Enregister"
+                      v-on:click="saveGeneralInformations()"
+                      style="color: darkcyan; margin-left: 65%"
+                    ></v-btn>
+                  </v-expansion-panel-text>
                 </v-expansion-panel>
                 <v-expansion-panel>
                   <v-expansion-panel-title
@@ -508,17 +595,20 @@
                     Sécurité
                   </v-expansion-panel-title>
                   <v-expansion-panel-text>
-                    
-                   <v-radio-group label="Mode de déconnexion" v-model="securitysettings.disconnectmode">
-                    <v-radio label="Déconnecter après validation" value="one"></v-radio>
-                    <v-radio label="Déconnecter après impression" value="two"></v-radio>
-                    
-                  </v-radio-group>
-                          
-                        
-                  <v-btn text="Enregister" v-on:click="saveSecurityOptions()" style="color:darkcyan; margin-left:65%"></v-btn>
-                    
-                 </v-expansion-panel-text>
+                    <v-radio-group
+                      label="Mode de déconnexion"
+                      v-model="securitysettings.disconnectmode"
+                    >
+                      <v-radio label="Déconnecter après validation" value="one"></v-radio>
+                      <v-radio label="Déconnecter après impression" value="two"></v-radio>
+                    </v-radio-group>
+
+                    <v-btn
+                      text="Enregister"
+                      v-on:click="saveSecurityOptions()"
+                      style="color: darkcyan; margin-left: 65%"
+                    ></v-btn>
+                  </v-expansion-panel-text>
                 </v-expansion-panel>
                 <v-expansion-panel>
                   <v-expansion-panel-title
@@ -527,31 +617,27 @@
                   >
                     Autorisations
                   </v-expansion-panel-title>
-                    <v-expansion-panel-text >
-                          <v-checkbox
-                          
-                            v-model="managerauthorisations.managercancreatetickets"
-                            label="Permettre au manager de créer des commandes."
-                          ></v-checkbox>
-                          <v-checkbox
-                            
-                            v-model="managerauthorisations.managercanselectwaiter"
-                            label="Permettre au manager de selectionner le serveur manuellement."
-                          ></v-checkbox>
-                          <v-btn text="Enregister" v-on:click="saveAuthSettings()" style="color:darkcyan; margin-left:65%"></v-btn>
-                    
-                    </v-expansion-panel-text>
+                  <v-expansion-panel-text>
+                    <v-checkbox
+                      v-model="managerauthorisations.managercancreatetickets"
+                      label="Permettre au manager de créer des commandes."
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="managerauthorisations.managercanselectwaiter"
+                      label="Permettre au manager de selectionner le serveur manuellement."
+                    ></v-checkbox>
+                    <v-btn
+                      text="Enregister"
+                      v-on:click="saveAuthSettings()"
+                      style="color: darkcyan; margin-left: 65%"
+                    ></v-btn>
+                  </v-expansion-panel-text>
                 </v-expansion-panel>
-               
               </v-expansion-panels>
             </div>
 
             <template v-slot:actions>
-              <v-btn
-                class="ms-auto"
-                text="Fermer"
-                @click="paramsdialog = false"
-              ></v-btn>
+              <v-btn class="ms-auto" text="Fermer" @click="paramsdialog = false"></v-btn>
             </template>
           </v-card>
         </v-dialog>
@@ -562,23 +648,15 @@
             <v-btn size="x-large" @click="sheet = !sheet">Fermer</v-btn>
 
             <v-card-text>
-           
-
               <div>
                 <v-list-subheader style="font-weight: bolder; width: 100%">
                   Ticket N° : {{ ticketnumber }}
                 </v-list-subheader>
-                <v-list
-                  style="max-height: 50vh; overflow-y: auto"
-                  id="listticket"
-                >
+                <v-list style="max-height: 50vh; overflow-y: auto" id="listticket">
                   <v-divider></v-divider>
 
                   <v-list-item v-for="e in ticket[0].content" :key="e.ID">
-                    <v-speed-dial
-                      location="left center"
-                      transition="fade-transition"
-                    >
+                    <v-speed-dial location="left center" transition="fade-transition">
                       <template v-slot:activator="{ props: activatorProps }">
                         <v-chip
                           v-bind="activatorProps"
@@ -589,12 +667,12 @@
                         ></v-chip>
                       </template>
                       <v-btn
-                    key="1"
-                    icon="mdi-comment-text"
-                    style="color:mediumslateblue; background-color: yellow;"
-                    size="small"
-                    @click="showComment(e)"
-                  ></v-btn>
+                        key="1"
+                        icon="mdi-comment-text"
+                        style="color: mediumslateblue; background-color: yellow"
+                        size="small"
+                        @click="showComment(e)"
+                      ></v-btn>
                       <v-btn
                         key="1"
                         icon="$clear"
@@ -622,7 +700,7 @@
                         icon="mdi-dialpad"
                         color="orange"
                         size="small"
-                        style="color: white !important; background-color : grey !important;"
+                        style="color: white !important; background-color: grey !important"
                         @click="showPad(e)"
                       ></v-btn>
                     </v-speed-dial>
@@ -630,11 +708,7 @@
                       <label style="margin-left: 5px">{{ e.text }}</label>
                       <span
                         size="small"
-                        style="
-                          float: right;
-                          margin-right: 5px;
-                          align-content: center;
-                        "
+                        style="float: right; margin-right: 5px; align-content: center"
                         variant="elevated"
                         color="primary"
                         >{{ (e.count * parseFloat(e.price)).toFixed(2) }}</span
@@ -672,24 +746,23 @@
                 >
                   <v-btn
                     style="background-color: orange; float: left; width: 45%"
-                    v-on:click="emptyTicket(); emptyTicketTwo()"
+                    v-on:click="
+                      emptyTicket();
+                      emptyTicketTwo();
+                    "
                     :disabled="btnvalidatedisabled && !ticketvalidate"
                   >
                     vider</v-btn
                   >
                   <v-btn
-                    style="
-                      background-color: cadetblue;
-                      float: right;
-                      width: 45%;
-                    "
-                    v-on:click="validateTicket(sessionsmap,securitysettings, authOff)"
+                    style="background-color: cadetblue; float: right; width: 45%"
+                    v-on:click="validateTicket(sessionsmap, securitysettings, authOff)"
                     :disabled="btnvalidatedisabled"
                   >
                     Valider</v-btn
                   >
                   <v-btn
-                   v-on:click="printReceipt(securitysettings, authOff)"
+                    v-on:click="printReceipt(securitysettings, authOff)"
                     style="
                       background-color: darkolivegreen;
                       float: right;
@@ -710,7 +783,10 @@
                       float: bottom;
                     "
                     :disabled="!btnvalidatedisabled"
-                    v-on:click="newTicket(); newTicketTwo()"
+                    v-on:click="
+                      newTicket();
+                      newTicketTwo();
+                    "
                   >
                     Nouveau ticket</v-btn
                   >
@@ -774,13 +850,10 @@
         @inform="inform"
         :usertoedit="usertoedit"
       ></edit-users-dialog-component>
-     
-      
-   
 
       <!--alert dialog-->
       <div class="centerstuff">
-        <v-bottom-sheet v-model="showalerttwo" inset >
+        <v-bottom-sheet v-model="showalerttwo" inset>
           <v-card
             :class="alertcardclasstwo"
             id="alertcard"
@@ -788,9 +861,7 @@
             style="opacity: 0.9"
           >
             <v-card-text>
-              <v-btn variant="text" @click="showalerttwo = !showalerttwo">
-                Fermer
-              </v-btn>
+              <v-btn variant="text" @click="showalerttwo = !showalerttwo"> Fermer </v-btn>
               <div>
                 {{ alerttexttwo }}
               </div>
@@ -799,7 +870,7 @@
         </v-bottom-sheet>
       </div>
       <div class="centerstuff">
-        <v-bottom-sheet v-model="showalert" inset >
+        <v-bottom-sheet v-model="showalert" inset>
           <v-card
             :class="alertcardclass"
             id="alertcard"
@@ -807,9 +878,7 @@
             style="opacity: 0.9"
           >
             <v-card-text>
-              <v-btn variant="text" @click="showalert = !showalert">
-                Fermer
-              </v-btn>
+              <v-btn variant="text" @click="showalert = !showalert"> Fermer </v-btn>
               <div>
                 {{ alerttext }}
               </div>
@@ -820,11 +889,7 @@
 
       <div class="text-center pa-4">
         <v-dialog v-model="confirmdialog" max-width="400" persistent>
-          <v-card
-            prepend-icon="mdi-delete"
-            :text="confirmationtext"
-            title="Supression"
-          >
+          <v-card prepend-icon="mdi-delete" :text="confirmationtext" title="Supression">
             <template v-slot:actions>
               <v-spacer></v-spacer>
 
@@ -844,27 +909,21 @@
       </div>
       <!--COMMENT DIALOG-->
       <v-dialog v-model="showcommentdialog" max-width="400" persistent>
+        <v-card prepend-icon="mdi-comment-text" title="Message">
+          <v-textarea
+            class="ma-2"
+            v-model="comment"
+            label="Message"
+            bg-color="amber-lighten-4"
+            @focus="onUpdatefocused"
+            clearable
+          ></v-textarea>
 
-          
-          <v-card
-            prepend-icon="mdi-comment-text"
-            
-            title="Message"
-          >
-            <v-textarea
-              class="ma-2"
-              v-model="comment"
-              label="Message"
-              bg-color="amber-lighten-4"
-           
-              @focus="onUpdatefocused"
-              clearable></v-textarea>
-             
-              <v-btn @click="saveComment(selecteditem);">Enregistrer</v-btn>
-              <v-btn @click="showcommentdialog = false"> Fermer </v-btn>
-          </v-card>
-        </v-dialog>
-        <!--DELETE USER CONFIRMATION-->
+          <v-btn @click="saveComment(selecteditem)">Enregistrer</v-btn>
+          <v-btn @click="showcommentdialog = false"> Fermer </v-btn>
+        </v-card>
+      </v-dialog>
+      <!--DELETE USER CONFIRMATION-->
       <div class="text-center pa-4">
         <v-dialog v-model="confirmdeleteprintingprofiledialog" max-width="400" persistent>
           <v-card
@@ -892,11 +951,7 @@
       <!--DELETE USER CONFIRMATION-->
       <div class="text-center pa-4">
         <v-dialog v-model="confirmdeleteuderdialog" max-width="400" persistent>
-          <v-card
-            prepend-icon="mdi-delete"
-            :text="confirmtext"
-            title="Supression"
-          >
+          <v-card prepend-icon="mdi-delete" :text="confirmtext" title="Supression">
             <template v-slot:actions>
               <v-spacer></v-spacer>
 
@@ -914,13 +969,9 @@
           </v-card>
         </v-dialog>
       </div>
-       <!--CONFIRM CHECK ORDER-->
-       <div class="text-center pa-4">
-        <v-dialog
-          v-model="confirmcheckorderdialog"
-          max-width="400"
-          persistent
-        >
+      <!--CONFIRM CHECK ORDER-->
+      <div class="text-center pa-4">
+        <v-dialog v-model="confirmcheckorderdialog" max-width="400" persistent>
           <v-card
             prepend-icon="mdi-marker-check"
             :text="confirmcheckordertext"
@@ -932,24 +983,20 @@
               <v-btn
                 @click="
                   checkConfirmation();
-                  confirmcheckorderdialog= false;
+                  confirmcheckorderdialog = false;
                 "
               >
                 OUI
               </v-btn>
 
-              <v-btn @click="confirmcheckorderdialog= false"> NON </v-btn>
+              <v-btn @click="confirmcheckorderdialog = false"> NON </v-btn>
             </template>
           </v-card>
         </v-dialog>
       </div>
       <!--CONFIRM CANCEL ORDER-->
       <div class="text-center pa-4">
-        <v-dialog
-          v-model="confirmcancelorderdialg"
-          max-width="400"
-          persistent
-        >
+        <v-dialog v-model="confirmcancelorderdialg" max-width="400" persistent>
           <v-card
             prepend-icon="mdi-cancel"
             :text="confirmcancelordertext"
@@ -961,24 +1008,20 @@
               <v-btn
                 @click="
                   cancelOrder();
-                  confirmcancelorderdialg= false;
+                  confirmcancelorderdialg = false;
                 "
               >
                 OUI
               </v-btn>
 
-              <v-btn @click="confirmcancelorderdialg= false"> NON </v-btn>
+              <v-btn @click="confirmcancelorderdialg = false"> NON </v-btn>
             </template>
           </v-card>
         </v-dialog>
       </div>
       <!--CONFIRM START END SESSION-->
       <div class="text-center pa-4">
-        <v-dialog
-          v-model="confirmstartendsessiondialog"
-          max-width="400"
-          persistent
-        >
+        <v-dialog v-model="confirmstartendsessiondialog" max-width="400" persistent>
           <v-card
             prepend-icon="mdi-clock-start"
             :text="confirmstartendsessiontext"
@@ -1002,16 +1045,8 @@
         </v-dialog>
       </div>
       <div class="text-center pa-4">
-        <v-dialog
-          v-model="deleteproductconfirmdialog"
-          max-width="400"
-          persistent
-        >
-          <v-card
-            prepend-icon="mdi-delete"
-            :text="confirmationtext"
-            title="Supression"
-          >
+        <v-dialog v-model="deleteproductconfirmdialog" max-width="400" persistent>
+          <v-card prepend-icon="mdi-delete" :text="confirmationtext" title="Supression">
             <template v-slot:actions>
               <v-spacer></v-spacer>
 
@@ -1053,113 +1088,102 @@
       <!--PRINTING DIALOG-->
 
       <v-dialog v-model="showprintingdialog" width="400" height="700" class="centerstuff">
-          
-        
-            <v-card
-              prepend-icon="mdi-printer"
-              class="pa-2"
-             
-              title="Impression"
+        <v-card prepend-icon="mdi-printer" class="pa-2" title="Impression">
+          <v-text-field
+            label="Nom du profile"
+            v-model="printingprofile.profile"
+            variant="solo-filled"
+            :rules="[required]"
+            density="compact"
+          ></v-text-field>
+          <v-select
+            label="Mode d'impression"
+            v-model="printingprofile.printingmode"
+            :items="printingmodes"
+            variant="solo-filled"
+            density="compact"
+            :rules="[required]"
+          >
+          </v-select>
+          <v-select
+            label="Fonction"
+            v-model="printingprofile.printingfunction"
+            :items="printingfunctions"
+            variant="solo-filled"
+            density="compact"
+            :rules="[required]"
+          >
+          </v-select>
+          <v-card
+            v-if="printingprofile.printingfunction == 'Personnalisé'"
+            style="overflow-y: scroll"
+            min-height="80"
+          >
+            <v-chip-group v-model="printingprofile.printingoptions" column multiple>
+              <v-chip
+                v-for="cat in categories"
+                style="font-size: 0.6rem"
+                :key="cat.categoryid"
+                :text="cat.categoryname"
+                :value="cat.categoryid"
+                variant="outlined"
+                filter
+              ></v-chip>
+            </v-chip-group>
+          </v-card>
+          <v-text-field
+            label="Adresse IP"
+            v-model="printingprofile.printerip"
+            variant="solo-filled"
+            density="compact"
+            :rules="[required]"
+          >
+          </v-text-field>
+          <v-text-field
+            label="Port"
+            v-model="printingprofile.printerport"
+            variant="solo-filled"
+            density="compact"
+            :rules="[required]"
+          >
+          </v-text-field>
+          <v-number-input
+            v-model="printingprofile.copies"
+            label="Copies"
+            density="compact"
+            variant="solo-filled"
+            control-variant="hidden"
+            :rules="[required]"
+            min="1"
+          >
+          </v-number-input>
+          <v-switch
+            v-model="printingprofile.active"
+            color="green"
+            :label="printingprofile.active ? 'Actif' : 'Inactif'"
+            hide-details
+          ></v-switch>
+
+          <template v-slot:actions>
+            <v-spacer></v-spacer>
+
+            <v-btn @click="showprintingdialog = false"> Fermer </v-btn>
+            <v-btn
+              @click="savePrintingProfile"
+              :disabled="
+                !Object.values(printingprofile).every(
+                  (value) => value !== '' && value !== null && value !== undefined
+                )
+              "
             >
-                    <v-text-field
-                label="Nom du profile"
-                v-model="printingprofile.profile"
-                variant="solo-filled"
-                :rules="[required]"
-                density="compact"
-                
-              ></v-text-field>
-              <v-select
-                label="Mode d'impression"
-                v-model="printingprofile.printingmode"
-                :items="printingmodes"
-                variant="solo-filled"
-                density="compact"
-                :rules="[required]"
-              >
-              </v-select>
-              <v-select
-                label="Fonction"
-                v-model="printingprofile.printingfunction"
-                :items="printingfunctions"
-                variant="solo-filled"
-                density="compact"
-                :rules="[required]"
-              >
-               
-              </v-select>
-              <v-card v-if ="printingprofile.printingfunction=='Personnalisé'" style="overflow-y: scroll;" min-height="80" >
-                <v-chip-group
-                        v-model="printingprofile.printingoptions"
-                        column
-                        multiple
-                      >
-                        <v-chip v-for="cat in categories"
-                        style="font-size: 0.6rem; "
-                          :key="cat.categoryid"
-                          :text="cat.categoryname"
-                          :value="cat.categoryid"
-                          variant="outlined"
-                          filter
-                        ></v-chip>
-                </v-chip-group>
-              </v-card>
-              <v-text-field
-                label="Adresse IP"
-                v-model="printingprofile.printerip"
-                variant="solo-filled"
-                density="compact"
-                :rules="[required]"
-                      >
-              </v-text-field>
-              <v-text-field
-                label="Port"
-                v-model="printingprofile.printerport"
-                variant="solo-filled"
-                density="compact"
-                :rules="[required]"
-                >
-              </v-text-field>
-              <v-number-input 
-                v-model="printingprofile.copies"
-                label="Copies"  
-                density="compact"
-                variant="solo-filled"
-                control-variant="hidden"
-                :rules="[required]"
-                min="1">
-                
-                
-             </v-number-input>
-             <v-switch
-              v-model="printingprofile.active"
-              color="green"
-              :label="printingprofile.active ? 'Actif' : 'Inactif'"
-              
-              hide-details
-            ></v-switch>
+              Enregistrer
+            </v-btn>
+          </template>
+        </v-card>
+      </v-dialog>
 
-              
-
-                
-               
-            
-                    <template v-slot:actions>
-                <v-spacer></v-spacer>
-  
-               
-  
-                <v-btn @click="showprintingdialog = false"> Fermer </v-btn>
-                <v-btn @click="savePrintingProfile" :disabled="!Object.values(printingprofile).every(value => value !== '' && value !== null && value !== undefined)" > Enregistrer </v-btn>
-              </template>
-            </v-card>
-         
-        </v-dialog>
-      
-       
- 
       <!--ADMIN LOGIN-->
-     
+
       <div>
         <v-dialog v-model="showadminprompt" width="150px" class="centerstuff">
           <div style="border-radius: 10px; width: 150px; text-align: center">
@@ -1178,14 +1202,10 @@
                 border-style: solid;
                 border-width: 3px;
               "
-               @focus="onUpdatefocused"
+              @focus="onUpdatefocused"
             />
             <v-btn
-              style="
-                margin-top: 20px;
-                background-color: darkolivegreen;
-                color: white;
-              "
+              style="margin-top: 20px; background-color: darkolivegreen; color: white"
               @click="adminLogin()"
               >Go</v-btn
             >
@@ -1194,261 +1214,374 @@
       </div>
       <!--ORDERS LIST-->
       <div>
-      
-      <v-bottom-sheet v-model="showorderslist" >
-        <div><order-content-component
-       :order="selectedorder"
-       :settings="generalsettings"
-       v-model="showcontent"
-       @close="showcontent=false"
-     ></order-content-component></div>
-        
-        <v-card class="text-center" height="100vh">
-          <v-card-text>
-            <v-btn variant="text" @click="showorderslist=!showorderslist">
-              Fermer
-            </v-btn>
+        <v-bottom-sheet v-model="showorderslist">
+          <div>
+            <order-content-component
+              :order="selectedorder"
+              :settings="generalsettings"
+              v-model="showcontent"
+              @close="showcontent = false"
+            ></order-content-component>
+          </div>
 
-            <div>
-              <v-card flat>
-           
-                <v-card-title class="d-flex">
-                 
-                    
-                      <input type="date" v-model="startdatemodel" >
-                      
-                      <label style="font-size: 12px; padding-top: 15px; margin-right: 10px; margin-left:10px; width:100px; align-content: right;">à partir de :</label>
-                      <input type="time" id="appt-time" name="appt-time"  step="600" value="00:00:01" v-model="starttimemodel">
-                      <label for="status" style="font-size: 12px; padding-top: 15px; margin-right: 10px; margin-left:10px">Etat:</label>
-                      <select id="statusbox" name="language" v-model="ordersstatus" @change="statuschanged">
-                          <option value="TOUT" selected>Tout</option>
-                          <option value="IMPAYE">Impayé</option>
-                          <option value="PAYE">Payé</option>
-                          <option value="ANNULE">Annulé</option>
-                      </select>
-                      
-                      <v-spacer></v-spacer>
-                     
-                      <v-text-field
-                        v-model="searchorder"
-                        density="compact"
-                        label="Recherche"
-                        prepend-inner-icon="mdi-magnify"
-                        variant="solo-filled"
-                        flat
-                        hide-details
-                        single-line
-                        max-width="300"
-                        style="height: 40px"
-                         @focus="onUpdatefocused"
-                      ></v-text-field>
-                  
-                      
-                 
-                 
-                </v-card-title>
-                <v-card-title class="d-flex">
-                 
-                    
-                 <input type="date" v-model="enddatemodel" >
-                 
-                 <label style="font-size: 12px; padding-top: 15px; margin-right: 10px; margin-left:10px; width:100px; align-content: right;">jusqu'à :</label>
-                 <input type="time" id="appt-time" name="appt-time" step="600" value="23:59:59" v-model="endtimemodel">
-                 
-                 <v-btn style="margin-top: 5px;margin-left: 10px;" @click="getOrders"><v-icon>mdi-refresh</v-icon> Recharger</v-btn>
-                 <v-btn style="margin-top: 5px;margin-left: 10px;"  @click="printOrders()"><v-icon>mdi-file-pdf</v-icon> Exporter</v-btn>
-                 <v-spacer></v-spacer>
-                
-             
-                 
-            
-            
-           </v-card-title>
+          <v-card class="text-center" height="100vh">
+            <v-card-text>
+              <v-btn variant="text" @click="showorderslist = !showorderslist">
+                Fermer
+              </v-btn>
 
+              <div>
+                <v-card flat>
+                  <v-card-title class="d-flex">
+                    <input type="date" v-model="startdatemodel" />
 
-
-
-                <v-data-table
-                  id="orderstable"
-                  :headers="[
-                    {
-                      title: 'Numéro',
-                      align: 'start',
-                      sortable: true,
-                      key: 'number',
-                    },
-                    { title: 'Serveur', key: 'waiter' },
-
-                    {title:'Initiateur', key:'creator'},
-                    { title: 'Date et heure', key: 'creationdate' },
-                    {title:'Etat', key:'status'},
-                    {title:'Total', key:'totalticket'},
-                    { title: 'Actions', key: 'actions' },
-                  ]"
-                  v-model:search="searchorder"
-                  :filter-keys="['waiter', 'creator', 'status','number']"
-                  :items="filtredorders"
-                  style="text-align: left"
-                   :itemsPerPageText="ordersProps.itemsPerPageText"
-                   :itemsPerPageOptions="ordersProps.itemsPerPageOptions"
-                  
-                >
-      
-                <template v-slot:[`item.status`]="{item}">
-                  <p :class="item.status">{{item.status}}</p>
-                </template>
-                <template v-slot:[`item.totalticket`]="{item}">
-                  <p >{{item.totalticket.toFixed(2)}}</p>
-                </template>
-                  <template v-slot:[`item.actions`]="{ item }">
-                    <v-icon
-                      class="me-2"
-                      size="large"
-                      @click="confirmCheckOrder(item)"
+                    <label
+                      style="
+                        font-size: 12px;
+                        padding-top: 15px;
+                        margin-right: 10px;
+                        margin-left: 10px;
+                        width: 100px;
+                        align-content: right;
+                      "
+                      >à partir de :</label
                     >
-                    mdi-cash-check
+                    <input
+                      type="time"
+                      id="appt-time"
+                      name="appt-time"
+                      step="600"
+                      value="00:00:01"
+                      v-model="starttimemodel"
+                    />
+                    <label
+                      for="status"
+                      style="
+                        font-size: 12px;
+                        padding-top: 15px;
+                        margin-right: 10px;
+                        margin-left: 10px;
+                      "
+                      >Etat:</label
+                    >
+                    <select
+                      id="statusbox"
+                      name="language"
+                      v-model="ordersstatus"
+                      @change="statuschanged"
+                    >
+                      <option value="TOUT" selected>Tout</option>
+                      <option value="IMPAYE">Impayé</option>
+                      <option value="PAYE">Payé</option>
+                      <option value="ANNULE">Annulé</option>
+                    </select>
 
-                    </v-icon>
+                    <v-spacer></v-spacer>
 
-                    <v-icon size="large" style="margin-left:5px" @click="showContent(item)">
-                      mdi-eye
-                    </v-icon>
-                    <v-icon size="large" style="margin-left:5px" @click="confirmCancelOrder(item)" v-if="loggeduser?.Role=='Gérant'">
-                      mdi-cancel
-                    </v-icon>
-                  </template>
-              
-                </v-data-table>
-              </v-card>
-            </div>
-          </v-card-text>
-        </v-card>
-        
-      </v-bottom-sheet>
-    </div>
-    <!--SITUATION-->
-    <div>
-      
-      <v-bottom-sheet v-model="showsituation" inset  class="situation">
-        <v-card class="text-center" height="55vh">
-          <v-card-text>
-            <v-btn variant="text" @click="showsituation = !showsituation">
-              Fermer
-            </v-btn>
-           
-         
+                    <v-text-field
+                      v-model="searchorder"
+                      density="compact"
+                      label="Recherche"
+                      prepend-inner-icon="mdi-magnify"
+                      variant="solo-filled"
+                      flat
+                      hide-details
+                      single-line
+                      max-width="300"
+                      style="height: 40px"
+                      @focus="onUpdatefocused"
+                    ></v-text-field>
+                  </v-card-title>
+                  <v-card-title class="d-flex">
+                    <input type="date" v-model="enddatemodel" />
+
+                    <label
+                      style="
+                        font-size: 12px;
+                        padding-top: 15px;
+                        margin-right: 10px;
+                        margin-left: 10px;
+                        width: 100px;
+                        align-content: right;
+                      "
+                      >jusqu'à :</label
+                    >
+                    <input
+                      type="time"
+                      id="appt-time"
+                      name="appt-time"
+                      step="600"
+                      value="23:59:59"
+                      v-model="endtimemodel"
+                    />
+
+                    <v-btn style="margin-top: 5px; margin-left: 10px" @click="getOrders"
+                      ><v-icon>mdi-refresh</v-icon> Recharger</v-btn
+                    >
+                    <v-btn
+                      style="margin-top: 5px; margin-left: 10px"
+                      @click="printOrders()"
+                      ><v-icon>mdi-file-pdf</v-icon> Exporter</v-btn
+                    >
+                    <v-spacer></v-spacer>
+                  </v-card-title>
+
+                  <v-data-table
+                    id="orderstable"
+                    :headers="[
+                      {
+                        title: 'Numéro',
+                        align: 'start',
+                        sortable: true,
+                        key: 'number',
+                      },
+                      { title: 'Serveur', key: 'waiter' },
+
+                      { title: 'Initiateur', key: 'creator' },
+                      { title: 'Date et heure', key: 'creationdate' },
+                      { title: 'Etat', key: 'status' },
+                      { title: 'Total', key: 'totalticket' },
+                      { title: 'Actions', key: 'actions' },
+                    ]"
+                    v-model:search="searchorder"
+                    :filter-keys="['waiter', 'creator', 'status', 'number']"
+                    :items="filtredorders"
+                    style="text-align: left"
+                    :itemsPerPageText="ordersProps.itemsPerPageText"
+                    :itemsPerPageOptions="ordersProps.itemsPerPageOptions"
+                  >
+                    <template v-slot:[`item.status`]="{ item }">
+                      <p :class="item.status">{{ item.status }}</p>
+                    </template>
+                    <template v-slot:[`item.totalticket`]="{ item }">
+                      <p>{{ item.totalticket.toFixed(2) }}</p>
+                    </template>
+                    <template v-slot:[`item.actions`]="{ item }">
+                      <v-icon class="me-2" size="large" @click="confirmCheckOrder(item)">
+                        mdi-cash-check
+                      </v-icon>
+
+                      <v-icon
+                        size="large"
+                        style="margin-left: 5px"
+                        @click="showContent(item)"
+                      >
+                        mdi-eye
+                      </v-icon>
+                      <v-icon
+                        size="large"
+                        style="margin-left: 5px"
+                        @click="confirmCancelOrder(item)"
+                        v-if="loggeduser?.Role == 'Gérant'"
+                      >
+                        mdi-cancel
+                      </v-icon>
+                    </template>
+                  </v-data-table>
+                </v-card>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-bottom-sheet>
+      </div>
+      <!--SITUATION-->
+      <div>
+        <v-bottom-sheet v-model="showsituation" inset class="situation">
+          <v-card class="text-center" height="55vh">
+            <v-card-text>
+              <v-btn variant="text" @click="showsituation = !showsituation">
+                Fermer
+              </v-btn>
+
               <v-card flat>
                 <v-card-title class="d-flex align-center pe-2">
-                 
                   Situation des commandes
 
                   <v-spacer></v-spacer>
-
-                 
                 </v-card-title>
 
                 <v-divider></v-divider>
                 <v-spacer></v-spacer>
                 <v-select
-                    label="Utilisateur"
-                    :items="usersnames"
-                    variant="outlined"
-                    @update:modelValue="userSelectionChanged"
-                    v-model="selectedperson"
-                    
-                  ></v-select>
-                  <div style="font-size: 12px; text-align: left;">
-                    <table style="width: 100%; border-collapse: collapse;">
-                      <tr>
-                        <td style="width: 60%;">Début  </td>
-                        
-                        <td style="width: 40%; text-align: right;">{{ getDateTime(sessions.get(selectedperson)?.start) }}</td>
-                      </tr>
-                      <tr >
-                        <td style="width: 60%;">Fin  </td>
-                        
-                        <td style="width: 40%; text-align: right;">{{ getDateTime(sessions.get(selectedperson)?.end) }}</td>
-                      </tr>
-                      <tr >
-                        <td style="width: 60%; background-color: darkcyan;">Total payées  </td>
-                        
-                        <td style="width: 40%; text-align: right; background-color: darkcyan;">{{getDateTime(sessions.get(selectedperson)?.start)!="" ? situation?.totalpaid?.toFixed(2): "0.00"}}</td>
-                      </tr>
-                      <tr>
-                        <td style="width: 60%; background-color: darkcyan">Nombre payées  </td>
-                        
-                        <td style="width: 40%; text-align: right; background-color: darkcyan">{{getDateTime(sessions.get(selectedperson)?.start)!="" ? situation?.countpaid:"0.00"}}</td>
-                      </tr>
-                      <tr>
-                        <td style="width: 60%; background-color: darkgoldenrod">Total impayées  </td>
-                        
-                        <td style="width: 40%; text-align: right;background-color: darkgoldenrod">{{getDateTime(sessions.get(selectedperson)?.start)!="" ? situation?.totalinpaid?.toFixed(2):"0.00"}}</td>
-                      </tr>
-                      <tr>
-                        <td style="width: 60%;background-color: darkgoldenrod;">Nombre impayées  </td>
-                        
-                        <td style="width: 40%; text-align: right;background-color: darkgoldenrod">{{getDateTime(sessions.get(selectedperson)?.start)!="" ? situation?.countinpaid: "0.00"}}</td>
-                      </tr>
-                      <tr>
-                        <td style="width: 60%;background-color: dimgray;">Total annulées  </td>
-                        
-                        <td style="width: 40%; text-align: right;background-color: dimgray">{{getDateTime(sessions.get(selectedperson)?.start)!="" ? situation?.totalcanceled?.toFixed(2):"0.00"}}</td>
-                      </tr>
-                      <tr>
-                        <td style="width: 60%;background-color: dimgray">Nombre annulées  </td>
-                        
-                        <td style="width: 40%; text-align: right;background-color: dimgray">{{getDateTime(sessions.get(selectedperson)?.start)!="" ? situation?.countcanceled:"0.00"}}</td>
-                      </tr>
-                      <tr>
-                        <td style="width: 60%;background-color:darkgreen; font-size: 14px; font-weight: bold;">Total  </td>
-                        
-                        <td style="width: 40%; text-align: right;background-color: darkgreen;font-size: 14px; font-weight: bold ">{{getDateTime(sessions.get(selectedperson)?.start)!="" ? situation?.total?.toFixed(2):"0.00"}}</td>
-                      </tr>
-                      
-                      
-                    </table>
-                    <v-btn color="orange" style="float:right; margin-top:10px" @click="printSituation()">Imprimer</v-btn>
-                  </div>
+                  label="Utilisateur"
+                  :items="usersnames"
+                  variant="outlined"
+                  @update:modelValue="userSelectionChanged"
+                  v-model="selectedperson"
+                ></v-select>
+                <div style="font-size: 12px; text-align: left">
+                  <table style="width: 100%; border-collapse: collapse">
+                    <tr>
+                      <td style="width: 60%">Début</td>
 
-                
+                      <td style="width: 40%; text-align: right">
+                        {{ getDateTime(sessions.get(selectedperson)?.start) }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 60%">Fin</td>
+
+                      <td style="width: 40%; text-align: right">
+                        {{ getDateTime(sessions.get(selectedperson)?.end) }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 60%; background-color: darkcyan">Total payées</td>
+
+                      <td
+                        style="width: 40%; text-align: right; background-color: darkcyan"
+                      >
+                        {{
+                          getDateTime(sessions.get(selectedperson)?.start) != ""
+                            ? situation?.totalpaid?.toFixed(2)
+                            : "0.00"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 60%; background-color: darkcyan">
+                        Nombre payées
+                      </td>
+
+                      <td
+                        style="width: 40%; text-align: right; background-color: darkcyan"
+                      >
+                        {{
+                          getDateTime(sessions.get(selectedperson)?.start) != ""
+                            ? situation?.countpaid
+                            : "0.00"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 60%; background-color: darkgoldenrod">
+                        Total impayées
+                      </td>
+
+                      <td
+                        style="
+                          width: 40%;
+                          text-align: right;
+                          background-color: darkgoldenrod;
+                        "
+                      >
+                        {{
+                          getDateTime(sessions.get(selectedperson)?.start) != ""
+                            ? situation?.totalinpaid?.toFixed(2)
+                            : "0.00"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 60%; background-color: darkgoldenrod">
+                        Nombre impayées
+                      </td>
+
+                      <td
+                        style="
+                          width: 40%;
+                          text-align: right;
+                          background-color: darkgoldenrod;
+                        "
+                      >
+                        {{
+                          getDateTime(sessions.get(selectedperson)?.start) != ""
+                            ? situation?.countinpaid
+                            : "0.00"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 60%; background-color: dimgray">
+                        Total annulées
+                      </td>
+
+                      <td
+                        style="width: 40%; text-align: right; background-color: dimgray"
+                      >
+                        {{
+                          getDateTime(sessions.get(selectedperson)?.start) != ""
+                            ? situation?.totalcanceled?.toFixed(2)
+                            : "0.00"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 60%; background-color: dimgray">
+                        Nombre annulées
+                      </td>
+
+                      <td
+                        style="width: 40%; text-align: right; background-color: dimgray"
+                      >
+                        {{
+                          getDateTime(sessions.get(selectedperson)?.start) != ""
+                            ? situation?.countcanceled
+                            : "0.00"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style="
+                          width: 60%;
+                          background-color: darkgreen;
+                          font-size: 14px;
+                          font-weight: bold;
+                        "
+                      >
+                        Total
+                      </td>
+
+                      <td
+                        style="
+                          width: 40%;
+                          text-align: right;
+                          background-color: darkgreen;
+                          font-size: 14px;
+                          font-weight: bold;
+                        "
+                      >
+                        {{
+                          getDateTime(sessions.get(selectedperson)?.start) != ""
+                            ? situation?.total?.toFixed(2)
+                            : "0.00"
+                        }}
+                      </td>
+                    </tr>
+                  </table>
+                  <v-btn
+                    color="orange"
+                    style="float: right; margin-top: 10px"
+                    @click="printSituation()"
+                    >Imprimer</v-btn
+                  >
+                </div>
               </v-card>
-            
-          </v-card-text>
-        </v-card>
-      </v-bottom-sheet>
-    </div>
-    <!--PRINTING MANAGEMENT-->
+            </v-card-text>
+          </v-card>
+        </v-bottom-sheet>
+      </div>
+      <!--PRINTING MANAGEMENT-->
       <div>
         <v-bottom-sheet v-model="printingmanagementsheet" inset>
-          <v-card class="text-center" height="70vh" width="80vw" >
+          <v-card class="text-center" height="70vh" width="80vw">
             <v-card-text>
-              <v-btn variant="text" @click="printingmanagementsheet= !printingmanagementsheet">
+              <v-btn
+                variant="text"
+                @click="printingmanagementsheet = !printingmanagementsheet"
+              >
                 Fermer
               </v-btn>
-              <v-btn
-                 
-                  ariant="text"
-                  
-                  @click="openManagePrintingDialog()"
-                >
-                  Nouveau
-                </v-btn>
-
-            
+              <v-btn ariant="text" @click="openManagePrintingDialog()"> Nouveau </v-btn>
 
               <div>
                 <v-card flat>
                   <v-card-title class="d-flex align-center pe-2">
-                    <v-icon icon="mdi-printer"></v-icon> &nbsp;
-                    Gestion de l'impression
-
-                    
-                    
-                   
+                    <v-icon icon="mdi-printer"></v-icon> &nbsp; Gestion de l'impression
                   </v-card-title>
 
                   <v-spacer></v-spacer>
-
 
                   <v-data-table
                     :headers="[
@@ -1466,16 +1599,16 @@
                       { title: 'Actif', key: 'active' },
                       { title: 'Actions', key: 'actions' },
                     ]"
-                    
                     :items="printingprofiles"
                     style="text-align: left"
-                     :itemsPerPageText="footerPropsPrinters.itemsPerPageText"
-                     :itemsPerPageOptions="footerPropsPrinters.itemsPerPageOptions"
-                    
+                    :itemsPerPageText="footerPropsPrinters.itemsPerPageText"
+                    :itemsPerPageOptions="footerPropsPrinters.itemsPerPageOptions"
                   >
-                  <template v-slot:[`item.active`]="{ item }">
-                    <p :class="item.active ? 'active' : 'inactive'">{{item.active ? 'Oui' : 'Non'}}</p>
-                  </template>
+                    <template v-slot:[`item.active`]="{ item }">
+                      <p :class="item.active ? 'active' : 'inactive'">
+                        {{ item.active ? "Oui" : "Non" }}
+                      </p>
+                    </template>
                     <template v-slot:[`item.actions`]="{ item }">
                       <v-icon
                         class="me-2"
@@ -1492,7 +1625,6 @@
                         mdi-delete
                       </v-icon>
                     </template>
-                   
                   </v-data-table>
                 </v-card>
               </div>
@@ -1502,32 +1634,22 @@
       </div>
       <!--USERS LIST-->
       <div>
-      
         <v-bottom-sheet v-model="userslistsheet" inset>
           <v-card class="text-center" height="70vh">
             <v-card-text>
               <v-btn variant="text" @click="userslistsheet = !userslistsheet">
                 Fermer
               </v-btn>
-              <v-btn
-                 
-                  ariant="text"
-                  
-                  @click="openManageUsersDialog()"
-                >
-                  Nouveau
-                </v-btn>
-
-            
+              <v-btn ariant="text" @click="openManageUsersDialog()"> Nouveau </v-btn>
 
               <div>
                 <v-card flat>
                   <v-card-title class="d-flex align-center pe-2">
-                    <v-icon icon="mdi-account-group-outline"></v-icon> &nbsp;
-                    Liste des utilisateurs
+                    <v-icon icon="mdi-account-group-outline"></v-icon> &nbsp; Liste des
+                    utilisateurs
 
                     <v-spacer></v-spacer>
-                    
+
                     <v-text-field
                       v-model="search"
                       density="compact"
@@ -1537,13 +1659,12 @@
                       flat
                       hide-details
                       single-line
-                       @focus="onUpdatefocused"
+                      @focus="onUpdatefocused"
                     ></v-text-field>
                   </v-card-title>
 
                   <v-divider></v-divider>
                   <v-spacer></v-spacer>
-
 
                   <v-data-table
                     :headers="[
@@ -1560,9 +1681,8 @@
                     :filter-keys="['Username', 'Role']"
                     :items="users"
                     style="text-align: left"
-                     :itemsPerPageText="footerProps.itemsPerPageText"
-                     :itemsPerPageOptions="footerProps.itemsPerPageOptions"
-                    
+                    :itemsPerPageText="footerProps.itemsPerPageText"
+                    :itemsPerPageOptions="footerProps.itemsPerPageOptions"
                   >
                     <template v-slot:[`item.actions`]="{ item }">
                       <v-icon
@@ -1580,7 +1700,6 @@
                         mdi-delete
                       </v-icon>
                     </template>
-                  
                   </v-data-table>
                 </v-card>
               </div>
@@ -1588,24 +1707,32 @@
           </v-card>
         </v-bottom-sheet>
       </div>
- 
     </v-app>
   </v-responsive>
 </template>
 
 <script setup>
-import { filtredMenu, getSortedFiltredMenu, initSortable, store } from "./Utils";  
-import { ref, onMounted, reactive, watch} from "vue";
+import { filtredMenu, getSortedFiltredMenu, initSortable, store } from "./Utils";
+import { ref, onMounted, reactive, watch } from "vue";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-const initialprintingprofile = {profile:'', printingmode:'', printingfunction:'', printingoptions:[], printerip:'', printerport:'9100', copies:1, active:false}
-const printingprofile=ref({...initialprintingprofile})
-const printingmodes = ref(["USB", "LAN"])
-const printingfunctions = ref(["Reçu", "Situation","Personnalisé"])
-const printingprofiles = ref([])
-const showprintingdialog = ref(false)
+const initialprintingprofile = {
+  profile: "",
+  printingmode: "",
+  printingfunction: "",
+  printingoptions: [],
+  printerip: "",
+  printerport: "9100",
+  copies: 1,
+  active: false,
+};
+const printingprofile = ref({ ...initialprintingprofile });
+const printingmodes = ref(["USB", "LAN"]);
+const printingfunctions = ref(["Reçu", "Situation", "Personnalisé"]);
+const printingprofiles = ref([]);
+const showprintingdialog = ref(false);
 
-const selectedperson = ref("")
+const selectedperson = ref("");
 const isCategoryDialogOpen = ref(false);
 const isProductDialogOpen = ref(false);
 const isEditProductDialogOpen = ref(false);
@@ -1613,7 +1740,10 @@ const isManageUsersDialogOpen = ref(false);
 const isEditUsersDialogOpen = ref(false);
 const confirmdeleteuderdialog = ref(false);
 const confirmtext = ref("");
-const managerauthorisations = ref({managercancreatetickets:true, managercanselectwaiter:false})
+const managerauthorisations = ref({
+  managercancreatetickets: true,
+  managercanselectwaiter: false,
+});
 const selectedwaiter = ref("");
 const rail = ref(true);
 const drawer = ref(false);
@@ -1621,849 +1751,838 @@ const waiters = ref("");
 const waitersnames = ref("");
 const selecteditem = ref(null);
 const comment = ref("");
-const authenticated=ref(false)
+const authenticated = ref(false);
 const users = ref("");
 const userslistsheet = ref(false);
-const showorderslist= ref(false)
+const showorderslist = ref(false);
 const search = ref("");
-const searchorder = ref('')
+const searchorder = ref("");
 const usertodelete = ref("");
-const selectedorder=ref(null)
-const showsituation = ref(false)
+const selectedorder = ref(null);
+const showsituation = ref(false);
 let usertoedit = null;
-const loggeduser = ref(null)
-const ordersstatus=ref("Tout")
-const sessionended = ref(false)
-const printingmanagementsheet =ref(false)
+const loggeduser = ref(null);
+const ordersstatus = ref("Tout");
+const sessionended = ref(false);
+const printingmanagementsheet = ref(false);
 
 const footerProps = {
-  itemsPerPageText: "Utilisateurs par page", 
-  itemsPerPageOptions: [5, 10, 20] 
-} 
+  itemsPerPageText: "Utilisateurs par page",
+  itemsPerPageOptions: [5, 10, 20],
+};
 const footerPropsPrinters = {
-  itemsPerPageText: "Imprimantes par page", 
-  itemsPerPageOptions: [5, 10, 20] 
-}
+  itemsPerPageText: "Imprimantes par page",
+  itemsPerPageOptions: [5, 10, 20],
+};
 const ordersProps = {
-  itemsPerPageText: "Commmandes par page", 
-  itemsPerPageOptions: [10,20,50,100] 
-} 
-const subscriberInfos = ref(null)
-const orders = ref([])
-const filtredorders =ref([])
+  itemsPerPageText: "Commmandes par page",
+  itemsPerPageOptions: [10, 20, 50, 100],
+};
+
+const orders = ref([]);
+const filtredorders = ref([]);
 
 let editcat = { categoryname: "", categoryid: "" };
 let addcatbutton = false;
 let keyssaved = "";
 let lenghtcounter = 0;
-const showcontent=ref(false)
-const startdatemodel=ref(null)
-const starttimemodel=ref("00:00:01")
-const enddatemodel=ref(null)
-const usersnames = ref('')
-const endtimemodel=ref("23:59:59")
-const theme= ref("dark")
-const generalsettings = ref({posname:'', address:'', phone:'', wificode:''})
-const securitysettings= ref({disconnectmode:'two'})
+const showcontent = ref(false);
+const startdatemodel = ref(null);
+const starttimemodel = ref("00:00:01");
+const enddatemodel = ref(null);
+const usersnames = ref("");
+const endtimemodel = ref("23:59:59");
+const theme = ref("dark");
+const generalsettings = ref({ posname: "", address: "", phone: "", wificode: "" });
+const securitysettings = ref({ disconnectmode: "two" });
 const waiterbox = ref(null);
-const themes = ref([{title:"bluegrey"},{title:"dark"},{title:"brown"},{title:"teal"},{title:"deepblue"},  {title:"purple"}])
-function openManagePrintingDialog(){
-  showprintingdialog.value = true
-  printingprofile.value = {...initialprintingprofile}
+const themes = ref([
+  { title: "bluegrey" },
+  { title: "dark" },
+  { title: "brown" },
+  { title: "teal" },
+  { title: "deepblue" },
+  { title: "purple" },
+]);
+function openManagePrintingDialog() {
+  showprintingdialog.value = true;
+  printingprofile.value = { ...initialprintingprofile };
 }
-const editprofile = ref(false)
-function openEditPrintingProfile(){
-  editprofile.value = true
-  showprintingdialog.value = true
+const editprofile = ref(false);
+function openEditPrintingProfile() {
+  editprofile.value = true;
+  showprintingdialog.value = true;
 }
-const printingprofiletodelete = ref("")
-function getOverlayStyle(){
-  return "z-index:9998;width:100%; height:100%; position: fixed; background-size: cover;top: 0;left: 0; background-image:url(https://"+ getHostName() +"/img/coffeeshop.jpg); opacity:0.5"
+const printingprofiletodelete = ref("");
+function getOverlayStyle() {
+  return (
+    "z-index:9998;width:100%; height:100%; position: fixed; background-size: cover;top: 0;left: 0; background-image:url(https://" +
+    getHostName() +
+    "/img/coffeeshop.jpg); opacity:0.5"
+  );
 }
-function confirmDeletePrintingProfile(item){
-  confirmtext.value = `Voulez-vous vraiment supprimer le profile d'impression ${item.profile} ?`
-  confirmdeleteprintingprofiledialog.value = true
-  printingprofiletodelete.value = item
+function confirmDeletePrintingProfile(item) {
+  confirmtext.value = `Voulez-vous vraiment supprimer le profile d'impression ${item.profile} ?`;
+  confirmdeleteprintingprofiledialog.value = true;
+  printingprofiletodelete.value = item;
 }
-const confirmdeleteprintingprofiledialog = ref(false)
-const valdiationbuttonstate = ref(false)
+const confirmdeleteprintingprofiledialog = ref(false);
+const valdiationbuttonstate = ref(false);
 const getBtnState = (state) => {
   valdiationbuttonstate.value = state;
   return state;
 };
 watch(valdiationbuttonstate, (newValue) => {
   if (newValue === false) {
-   
     enableRFIDReading();
-    
   } else {
-    
     disableRFIDReading();
-    
   }
 });
-async function savePrintingProfile(){
- 
-  if (printingprofiles.value.find(e=>e.profile==printingprofile.value.profile)!=null && !editprofile.value){
-    alertHandlerTwo({Prefix:"ERROR",Message:"Ce nom de profile existe déjà", data:""})
-    return
+async function savePrintingProfile() {
+  if (
+    printingprofiles.value.find((e) => e.profile == printingprofile.value.profile) !=
+      null &&
+    !editprofile.value
+  ) {
+    alertHandlerTwo({
+      Prefix: "ERROR",
+      Message: "Ce nom de profile existe déjà",
+      data: "",
+    });
+    return;
   }
-  
-  if (editprofile.value){
-    await updatePrintingProfile()
-    return
+
+  if (editprofile.value) {
+    await updatePrintingProfile();
+    return;
   }
-  printingprofiles.value.push({...printingprofile.value})
+  printingprofiles.value.push({ ...printingprofile.value });
   const form = new FormData();
-  
-  form.append("printingsettings", JSON.stringify(printingprofiles.value))
-  await fetch("https://" +  getHostName() + "/saveprintingsettings",{method:'post', body:form})
-  .then(resp=>{
-    if (!resp.ok) throw Error(resp.statusText)
-    return resp.json()
+
+  form.append("printingsettings", JSON.stringify(printingprofiles.value));
+  await fetch("https://" + getHostName() + "/saveprintingsettings", {
+    method: "post",
+    body: form,
   })
-  .then(data=>{
-    if (data==null) return
-    alertHandlerTwo(data)
-    
-    printingprofile.value = {...initialprintingprofile}
-    showprintingdialog.value = false
-  })
-  .catch(ex=>{
-    console.error(ex)
-  })
+    .then((resp) => {
+      if (!resp.ok) throw Error(resp.statusText);
+      return resp.json();
+    })
+    .then((data) => {
+      if (data == null) return;
+      alertHandlerTwo(data);
+
+      printingprofile.value = { ...initialprintingprofile };
+      showprintingdialog.value = false;
+    })
+    .catch((ex) => {
+      console.error(ex);
+    });
 }
-async function deletePrintingProfile(){
-  
+async function deletePrintingProfile() {
   const form = new FormData();
-  form.append("printingsettings", JSON.stringify(printingprofiles.value))
-  await fetch("https://" +  getHostName() + "/saveprintingsettings",{method:'post', body:form})
-  .then(resp=>{
-    if (!resp.ok) throw Error(resp.statusText)
-    return resp.json()
+  form.append("printingsettings", JSON.stringify(printingprofiles.value));
+  await fetch("https://" + getHostName() + "/saveprintingsettings", {
+    method: "post",
+    body: form,
   })
-  .then(data=>{
-    if (data==null) return
-    alertHandlerTwo(data)
-    if (data.Prefix=="ERROR") return
-    printingprofiles.value = printingprofiles.value.filter(e=>e.profile!=printingprofiletodelete.value.profile)
-    confirmdeleteprintingprofiledialog.value = false
-   
-    
-  })
-  .catch(ex=>{
-    console.error(ex)
-  })
+    .then((resp) => {
+      if (!resp.ok) throw Error(resp.statusText);
+      return resp.json();
+    })
+    .then((data) => {
+      if (data == null) return;
+      alertHandlerTwo(data);
+      if (data.Prefix == "ERROR") return;
+      printingprofiles.value = printingprofiles.value.filter(
+        (e) => e.profile != printingprofiletodelete.value.profile
+      );
+      confirmdeleteprintingprofiledialog.value = false;
+    })
+    .catch((ex) => {
+      console.error(ex);
+    });
 }
-async function updatePrintingProfile(){
- 
+async function updatePrintingProfile() {
   const form = new FormData();
-  form.append("printingsettings", JSON.stringify(printingprofiles.value))
-  await fetch("https://" +  getHostName() + "/saveprintingsettings",{method:'post', body:form})
-  .then(resp=>{
-    if (!resp.ok) throw Error(resp.statusText)
-    return resp.json()
+  form.append("printingsettings", JSON.stringify(printingprofiles.value));
+  await fetch("https://" + getHostName() + "/saveprintingsettings", {
+    method: "post",
+    body: form,
   })
-  .then(data=>{
-    if (data==null) return
-    alertHandlerTwo(data)
-    
-    showprintingdialog.value = false
-    
-  })
-  .catch(ex=>{
-    console.error(ex)
-  })
+    .then((resp) => {
+      if (!resp.ok) throw Error(resp.statusText);
+      return resp.json();
+    })
+    .then((data) => {
+      if (data == null) return;
+      alertHandlerTwo(data);
+
+      showprintingdialog.value = false;
+    })
+    .catch((ex) => {
+      console.error(ex);
+    });
 }
-function changeTheme(t){
-   theme.value = t
-   localStorage.setItem('theme', theme.value)
+function changeTheme(t) {
+  theme.value = t;
+  localStorage.setItem("theme", theme.value);
 }
 function convertDateFormat(dateString) {
-  
   const [year, month, day] = dateString.split("-");
 
- 
   return `${day}-${month}-${year}`;
 }
-async function changeProductCategory(element,category, catid){
-  
-  let form = new FormData()
-  form.append("elementid", element.productid)
-  form.append("categoryid", category.categoryid)
- await fetch("https://" + getHostName() + "/changeproductcategory", {method:'post', body: form})
- .then(r=>{
-  if (!r.ok) throw Error(r.statusText)
-  return r.json()
- })
- .then(data=>{
-   if (data==null) return
-   alertHandlerTwo(data)
-   let localoriginfiltredmenu = JSON.parse(localStorage.getItem("filtredMenu" + catid))
-   let localdestinationfiltredmenu = JSON.parse(localStorage.getItem("filtredMenu" + category.categoryid))
-   
-   
-   element.category=category.categoryid
-   filtredMenu.value = filtredMenu.value.filter(e=>e.productid!=element.productid)  
-   if (localdestinationfiltredmenu!=null){
-      localdestinationfiltredmenu.push(element)
-   }
-   if (localoriginfiltredmenu!=null){
-    localoriginfiltredmenu = localoriginfiltredmenu.filter(e=>e.productid!=element.productid)
-   }
-   
-   
-  
-   
-   localStorage.setItem("filtredMenu" + catid , JSON.stringify(localoriginfiltredmenu));
-   localStorage.setItem("filtredMenu" + category.categoryid , JSON.stringify(localdestinationfiltredmenu));
-   
- })
- .catch(ex=>{
-   console.error(ex)
- })
+async function changeProductCategory(element, category, catid) {
+  let form = new FormData();
+  form.append("elementid", element.productid);
+  form.append("categoryid", category.categoryid);
+  await fetch("https://" + getHostName() + "/changeproductcategory", {
+    method: "post",
+    body: form,
+  })
+    .then((r) => {
+      if (!r.ok) throw Error(r.statusText);
+      return r.json();
+    })
+    .then((data) => {
+      if (data == null) return;
+      alertHandlerTwo(data);
+      let localoriginfiltredmenu = JSON.parse(
+        localStorage.getItem("filtredMenu" + catid)
+      );
+      let localdestinationfiltredmenu = JSON.parse(
+        localStorage.getItem("filtredMenu" + category.categoryid)
+      );
+
+      element.category = category.categoryid;
+      filtredMenu.value = filtredMenu.value.filter(
+        (e) => e.productid != element.productid
+      );
+      if (localdestinationfiltredmenu != null) {
+        localdestinationfiltredmenu.push(element);
+      }
+      if (localoriginfiltredmenu != null) {
+        localoriginfiltredmenu = localoriginfiltredmenu.filter(
+          (e) => e.productid != element.productid
+        );
+      }
+
+      localStorage.setItem("filtredMenu" + catid, JSON.stringify(localoriginfiltredmenu));
+      localStorage.setItem(
+        "filtredMenu" + category.categoryid,
+        JSON.stringify(localdestinationfiltredmenu)
+      );
+    })
+    .catch((ex) => {
+      console.error(ex);
+    });
 }
-const formvalidate = ref(false)
-const required = (v)=> {
-        
-        return !!v || 'Champ requis';
-        
-}
-function printOrders(){
+const formvalidate = ref(false);
+const required = (v) => {
+  return !!v || "Champ requis";
+};
+function printOrders() {
   const pdf = new jsPDF();
-  let sum=0
-  filtredorders.value.forEach(item=>{
-    if (item.status != "ANNULE"){
-      sum += item.totalticket
+  let sum = 0;
+  filtredorders.value.forEach((item) => {
+    if (item.status != "ANNULE") {
+      sum += item.totalticket;
     }
-  })
-  
- 
+  });
 
-  const tableheaders=[
-                    {
-                      title: 'Numéro',
-                      align: 'start',
-                      sortable: true,
-                      key: 'number',
-                    },
-                    { title: 'Serveur', key: 'waiter' },
-                    {title:'Initiateur', key:'creator'},
-                    { title: 'Date et heure', key: 'creationdate' },
-                    {title:'Etat', key:'status'},
-                    {title:'Total', key:'totalticket'},
-                    
-                  ]
-const headers = tableheaders.map((header) => header.title);
-const rows = filtredorders.value.map((item) =>
-  tableheaders.map((header) => item[header.key])
-);
-const now = new Date();
-const hours = now.getHours(); 
-const minutes = now.getMinutes(); 
-const currentTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  const tableheaders = [
+    {
+      title: "Numéro",
+      align: "start",
+      sortable: true,
+      key: "number",
+    },
+    { title: "Serveur", key: "waiter" },
+    { title: "Initiateur", key: "creator" },
+    { title: "Date et heure", key: "creationdate" },
+    { title: "Etat", key: "status" },
+    { title: "Total", key: "totalticket" },
+  ];
+  const headers = tableheaders.map((header) => header.title);
+  const rows = filtredorders.value.map((item) =>
+    tableheaders.map((header) => item[header.key])
+  );
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const currentTime = `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}`;
 
+  pdf.setFontSize(18);
+  pdf.text("Etat des opérations", 10, 20);
+  pdf.setFontSize(12);
+  pdf.text(
+    "Date de début: " +
+      convertDateFormat(startdatemodel.value) +
+      " à " +
+      starttimemodel.value,
+    10,
+    30
+  );
+  pdf.text(
+    "Date de fin: " + convertDateFormat(enddatemodel.value) + " à " + currentTime,
+    10,
+    40
+  );
+  pdf.autoTable({
+    head: [headers],
+    body: rows,
+    startY: 50,
+    margin: { left: 10, right: 10 },
+    styles: { fontSize: 10 },
+    footStyles: { fontStyle: "bold" },
+  });
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const tableEndY = pdf.autoTable.previous.finalY + 10;
 
-pdf.setFontSize(18);
-pdf.text("Etat des opérations", 10, 20)
-pdf.setFontSize(12)
-pdf.text("Date de début: " + convertDateFormat(startdatemodel.value) +" à " + starttimemodel.value, 10, 30)
-pdf.text("Date de fin: " + convertDateFormat(enddatemodel.value) + " à " + currentTime, 10, 40)
-pdf.autoTable({
-        head: [headers], 
-        body: rows,
-        startY: 50, 
-        margin: { left: 10, right: 10 }, 
-        styles: { fontSize: 10 }, 
-        footStyles: { fontStyle: "bold" }, 
-});
-const pageWidth = pdf.internal.pageSize.getWidth();
-const tableEndY = pdf.autoTable.previous.finalY + 10;
-
-pdf.setFontSize(14);
-pdf.setFont("helvetica", "bold");
-pdf.text(
-  `Total: ${sum.toFixed(2)}`,
-  pageWidth - 50,
-  tableEndY
-);
-pdf.save("Etatopérations.pdf");
+  pdf.setFontSize(14);
+  pdf.setFont("helvetica", "bold");
+  pdf.text(`Total: ${sum.toFixed(2)}`, pageWidth - 50, tableEndY);
+  pdf.save("Etatopérations.pdf");
 }
-function getDisabledState(){
-  if (managerauthorisations.value.managercanselectwaiter){
-    if (loggeduser.value?.Role == "Gérant"){
-      return false
+function getDisabledState() {
+  if (managerauthorisations.value.managercanselectwaiter) {
+    if (loggeduser.value?.Role == "Gérant") {
+      return false;
     }
-    return true
+    return true;
   }
-  return true
+  return true;
 }
-async function savePrintingSettings(){
-  const form = new FormData()
-  
-  form.append("printingsettings", JSON.stringify(printingSettings.value))
-  await fetch("https://" + getHostName() + "/saveprintingsettings", {method:'post', body: form})
-  .then(resp=>{
-    if (!resp.ok) throw Error(resp.statusText)
-    return resp.json()
-  })
-  .then(data=>{
-    if (data==null) return
-    
-    alertHandlerTwo(data)
-   
-  })
+async function savePrintingSettings() {
+  const form = new FormData();
 
-  .catch(ex=>{
-    console.error(ex)
+  form.append("printingsettings", JSON.stringify(printingSettings.value));
+  await fetch("https://" + getHostName() + "/saveprintingsettings", {
+    method: "post",
+    body: form,
   })
-}
-async function saveAuthSettings(){
-  const form = new FormData()
-  form.append("managersettings", JSON.stringify(managerauthorisations.value))
-  await fetch("https://" + getHostName() + "/savemanagersettings", {method:'post', body: form})
-  .then(resp=>{
-    if (!resp.ok) throw Error(rersp.statusText)
-    return resp.json()
-  })
-  .then(data=>{
-    if (data==null) return
-    
-    alertHandlerTwo(data)
-   
-  })
-  .catch(ex=>{
-    console.error(ex)
-  })
-}
-async function loadSettings(){
+    .then((resp) => {
+      if (!resp.ok) throw Error(resp.statusText);
+      return resp.json();
+    })
+    .then((data) => {
+      if (data == null) return;
 
-  await fetch("https://" + getHostName() + "/loadsettings", {method:'post'})
-  .then(resp=>{
-    if (!resp.ok) throw Error(rersp.statusText)
-    return resp.json()
+      alertHandlerTwo(data);
+    })
+
+    .catch((ex) => {
+      console.error(ex);
+    });
+}
+async function saveAuthSettings() {
+  const form = new FormData();
+  form.append("managersettings", JSON.stringify(managerauthorisations.value));
+  await fetch("https://" + getHostName() + "/savemanagersettings", {
+    method: "post",
+    body: form,
   })
-  .then(data=>{
-    if (data==null) return
+    .then((resp) => {
+      if (!resp.ok) throw Error(rersp.statusText);
+      return resp.json();
+    })
+    .then((data) => {
+      if (data == null) return;
+
+      alertHandlerTwo(data);
+    })
+    .catch((ex) => {
+      console.error(ex);
+    });
+}
+async function loadSettings() {
+  await fetch("https://" + getHostName() + "/loadsettings", { method: "post" })
+    .then((resp) => {
+      if (!resp.ok) throw Error(rersp.statusText);
+      return resp.json();
+    })
+    .then((data) => {
+      if (data == null) return;
+
+      generalsettings.value = JSON.parse(data.generalsettings);
+      managerauthorisations.value = JSON.parse(data.managersettings);
+      printingprofiles.value = JSON.parse(data.printingsettings);
+
+      securitysettings.value =
+        data.securitysettings != ""
+          ? JSON.parse(data.securitysettings)
+          : { disconnectmode: "two" };
+    })
+    .catch((ex) => {
+      console.error(ex);
+    });
+}
+function showComment(e) {
+  showcommentdialog.value = true;
+  selecteditem.value = e;
+  comment.value = e.comment;
+}
+function saveComment() {
+  selecteditem.value.comment = comment.value;
+}
+async function saveSecurityOptions() {
+  const form = new FormData();
+  form.append("securitysettings", JSON.stringify(securitysettings.value));
+  await fetch("https://" + getHostName() + "/savesecuritysettings", {
+    method: "post",
+    body: form,
+  })
+    .then((resp) => {
+      if (!resp.ok) throw Error(rersp.statusText);
+      return resp.json();
+    })
+    .then((data) => {
+      if (data == null) return;
+      alertHandlerTwo(data);
+    })
+    .catch((ex) => {
+      console.error(ex);
+    });
+}
+async function saveGeneralInformations() {
+  const form = new FormData();
+  form.append("generalsettings", JSON.stringify(generalsettings.value));
+  await fetch("https://" + getHostName() + "/savegeneralsettings", {
+    method: "post",
+    body: form,
+  })
+    .then((resp) => {
+      if (!resp.ok) throw Error(rersp.statusText);
+      return resp.json();
+    })
+    .then((data) => {
+      if (data == null) return;
+      alertHandlerTwo(data);
+    })
+    .catch((ex) => {
+      console.error(ex);
+    });
+}
+function emptyTicketTwo() {
  
-    generalsettings.value=JSON.parse(data.generalsettings)
-    managerauthorisations.value =JSON.parse(data.managersettings)
-    printingprofiles.value=JSON.parse(data.printingsettings)
-    
-    securitysettings.value=data.securitysettings!= "" ? JSON.parse(data.securitysettings) : {disconnectmode:'two'}
-   
-    
-   
-  })
-  .catch(ex=>{
-    console.error(ex)
-  })
-}
-function showComment(e){
-  showcommentdialog.value=true
-  selecteditem.value=e
-  comment.value=e.comment
-  
-}
-function saveComment(){
-  selecteditem.value.comment=comment.value
- 
-}
-async function saveSecurityOptions(){
-  const form = new FormData()
-  form.append("securitysettings", JSON.stringify(securitysettings.value))
-  await fetch("https://" + getHostName() + "/savesecuritysettings", {method:'post', body: form})
-  .then(resp=>{
-    if (!resp.ok) throw Error(rersp.statusText)
-    return resp.json()
-  })
-  .then(data=>{
-    if (data==null) return
-    alertHandlerTwo(data)
-  })
-  .catch(ex=>{
-    console.error(ex)
-  })
-}
-async function saveGeneralInformations(){
-  
-  const form = new FormData()
-  form.append("generalsettings", JSON.stringify(generalsettings.value))
-  await fetch("https://" + getHostName() + "/savegeneralsettings", {method:'post', body:form})
-  .then(resp=>{
-    if (!resp.ok) throw Error(rersp.statusText)
-    return resp.json()
-  })
-  .then(data=>{
-    if (data==null) return
-     alertHandlerTwo(data)
-  })
-  .catch(ex=>{
-    console.error(ex)
-  })
-}
-function emptyTicketTwo(){
-  subscriberInfos.value = null
-  store.Member=null
+  store.Member = null;
 }
 
-function newTicketTwo(){
-  subscriberInfos.value = null
-  store.Member=null
-  if (loggeduser.value.Role=="Gérant")
-    selectedwaiter.value=''
+function newTicketTwo() {
   
-  const newticketbutton= document.getElementById("newticketbutton")
- 
-  newticketbutton.blur()
- 
+  store.Member = null;
+  if (loggeduser.value.Role == "Gérant") selectedwaiter.value = "";
+
+  const newticketbutton = document.getElementById("newticketbutton");
+
+  newticketbutton.blur();
 }
-
-
 
 const getTodayDate = () => {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0'); 
-      const day = String(today.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 };
 function formatDateToDDMMYYYYHHMMSS(dateString) {
   const date = new Date(dateString);
 
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0'); 
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
 
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
 
   return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
 function isElectron() {
-  return navigator.userAgent.toLowerCase().includes("electron")
+  return navigator.userAgent.toLowerCase().includes("electron");
 }
 
-
-
-function isRunningFromGUIApp(){
-  if ((window.chrome && window.chrome.webview) || (window.nadilpos || isElectron()) )
-    return true
-  return false
+function isRunningFromGUIApp() {
+  if ((window.chrome && window.chrome.webview) || window.nadilpos || isElectron())
+    return true;
+  return false;
 }
 onMounted(async () => {
-  if (!isRunningFromGUIApp() ){
-   
-   window.location.href="notauthorised"
-   return
+  if (!isRunningFromGUIApp()) {
+    window.location.href = "notauthorised";
+    return;
   }
-  document.documentElement.style.overflowY = 'hidden';
-  document.body.style.overflowY = 'hidden';
-  
-  theme.value = localStorage.getItem('theme') || 'dark'
-  
-  
+  document.documentElement.style.overflowY = "hidden";
+  document.body.style.overflowY = "hidden";
+
+  theme.value = localStorage.getItem("theme") || "dark";
+
   await getUsers();
- 
-  const otpfirstchar= document.querySelector('[aria-label="Please enter OTP character 1"]')
-  if(otpfirstchar!= null)
-    otpfirstchar.focus()
-  startdatemodel.value= getTodayDate()
-  starttimemodel.value="00:00:00"
-  enddatemodel.value=getTodayDate()
-  ordersstatus.value='TOUT'
+
+  const otpfirstchar = document.querySelector(
+    '[aria-label="Please enter OTP character 1"]'
+  );
+  if (otpfirstchar != null) otpfirstchar.focus();
+  startdatemodel.value = getTodayDate();
+  starttimemodel.value = "00:00:00";
+  enddatemodel.value = getTodayDate();
+  ordersstatus.value = "TOUT";
   initSortable();
 });
-const confirmstartendsessiondialog =ref(false)
-const confirmstartendsessiontext =ref("")
-async function confirmStartOrEndSession(){
-  const form = new FormData()
-  
-  if (loggeduser.value.Username==null) return
-  form.append("username",loggeduser.value.Username)
-  await fetch("https://" + getHostName() + "/changesessionstatus",{method:'post', body:form})
-  .then(r=>{
-    if(!r.ok) throw Error(r.statusText)
-      return r.json()
-  })
-  .then(async d=>{
-    
-      await getSessionsStatus()
+const confirmstartendsessiondialog = ref(false);
+const confirmstartendsessiontext = ref("");
+async function confirmStartOrEndSession() {
+  const form = new FormData();
 
+  if (loggeduser.value.Username == null) return;
+  form.append("username", loggeduser.value.Username);
+  await fetch("https://" + getHostName() + "/changesessionstatus", {
+    method: "post",
+    body: form,
   })
-  .catch(ex=>{console.error(ex)})
+    .then((r) => {
+      if (!r.ok) throw Error(r.statusText);
+      return r.json();
+    })
+    .then(async (d) => {
+      await getSessionsStatus();
+    })
+    .catch((ex) => {
+      console.error(ex);
+    });
 }
-async function showSituation(){
-  
-  showsituation.value=!showsituation.value
-  usersnames.value=[]
-  if (loggeduser.value?.Role== "Serveur"){
-    
-    usersnames.value.push(loggeduser.value?.Username)
-    selectedperson.value= loggeduser.value?.Username
-    userSelectionChanged(loggeduser.value?.Username)
-    return
+async function showSituation() {
+  showsituation.value = !showsituation.value;
+  usersnames.value = [];
+  if (loggeduser.value?.Role == "Serveur") {
+    usersnames.value.push(loggeduser.value?.Username);
+    selectedperson.value = loggeduser.value?.Username;
+    userSelectionChanged(loggeduser.value?.Username);
+    return;
   }
   users.value?.forEach((w) => {
-        usersnames.value.push(w.Username)
-       
+    usersnames.value.push(w.Username);
   });
-  
- 
 }
-function getDateTime(datetime){
- 
-  if (datetime==undefined) return ""
-  if (datetime=="0001-01-01T00:00:00Z" || datetime=="" ){
-    return ""
+function getDateTime(datetime) {
+  if (datetime == undefined) return "";
+  if (datetime == "0001-01-01T00:00:00Z" || datetime == "") {
+    return "";
   }
   const date = new Date(datetime);
-  const formattedDate = date.toISOString().split('T')[0]
-  const formattedTime = date.toISOString().split('T')[1].slice(0, 5)
-  return formattedDate + " " + formattedTime
+  const formattedDate = date.toISOString().split("T")[0];
+  const formattedTime = date.toISOString().split("T")[1].slice(0, 5);
+  return formattedDate + " " + formattedTime;
 }
-const situation = ref("")
-const situationToPrint = ref({})
-async function userSelectionChanged(user){
-  situationToPrint.value={}
-  if (user=="") return
-  
-  if (sessions.get(user)?.start== undefined)  return
+const situation = ref("");
+const situationToPrint = ref({});
+async function userSelectionChanged(user) {
+  situationToPrint.value = {};
+  if (user == "") return;
+
+  if (sessions.get(user)?.start == undefined) return;
   const date = new Date(sessions.get(user).start);
-  const formattedDate = date.toISOString().split('T')[0]
-  const formattedTime = date.toISOString().split('T')[1].slice(0, 5)
-  const form = new FormData()
-  
-  form.append("start", formattedDate + " " + formattedTime )
-  form.append("username", user)
-  await fetch("https://" + getHostName() + "/getsituation", {method:'post', body:form})
-  .then(r=>{
-    if (!r.ok) throw Error(r.statusText)
-    return r.json()
+  const formattedDate = date.toISOString().split("T")[0];
+  const formattedTime = date.toISOString().split("T")[1].slice(0, 5);
+  const form = new FormData();
+
+  form.append("start", formattedDate + " " + formattedTime);
+  form.append("username", user);
+  await fetch("https://" + getHostName() + "/getsituation", {
+    method: "post",
+    body: form,
   })
-  .then(data=>{
-    if (data== null) return
-    situation.value=data
-    
-    situationToPrint.value={username:user,
-                                totalpaid:situation.value?.totalpaid,
-                                countpaid:situation.value?.countpaid,
-                                totalinpaid:situation.value?.totalinpaid,
-                                countinpaid:situation.value?.countinpaid,
-                                totalcanceled:situation.value?.totalcanceled,
-                                countcanceled:situation.value?.countcanceled,
-                                total:situation.value?.total,
-                                sessionstart:sessions.get(user)?.start,
-                                sessionend:sessions.get(user)?.end
+    .then((r) => {
+      if (!r.ok) throw Error(r.statusText);
+      return r.json();
+    })
+    .then((data) => {
+      if (data == null) return;
+      situation.value = data;
 
-                                }
-    
-    
-  })
-  .catch(ex=>{
-    console.error(ex)
-  })
-  
+      situationToPrint.value = {
+        username: user,
+        totalpaid: situation.value?.totalpaid,
+        countpaid: situation.value?.countpaid,
+        totalinpaid: situation.value?.totalinpaid,
+        countinpaid: situation.value?.countinpaid,
+        totalcanceled: situation.value?.totalcanceled,
+        countcanceled: situation.value?.countcanceled,
+        total: situation.value?.total,
+        sessionstart: sessions.get(user)?.start,
+        sessionend: sessions.get(user)?.end,
+      };
+    })
+    .catch((ex) => {
+      console.error(ex);
+    });
 }
-function showVirtualkeyBoard(){
-  if (window.chrome.webview!=null)
-    window.chrome.webview.postMessage("vkeyboard")
- 
+function showVirtualkeyBoard() {
+  if (window.chrome.webview != null) window.chrome.webview.postMessage("vkeyboard");
 }
-function statuschanged(){
-  filtredorders.value=[]
-  if (ordersstatus?.value != "TOUT"){
-      
-      
-      orders.value.forEach(order=>{
-        if (order.status == ordersstatus.value){
-          filtredorders.value.push(order)
-        }
-
-      })
-      
-      return
-    }
-    filtredorders.value=orders.value
-}
-
-async function authOff(){
-
-  await informServer()
-  authenticated.value=false
-  selectedwaiter.value=''
-  startdatemodel.value= getTodayDate()
-  starttimemodel.value="00:00:00"
-  enddatemodel.value=getTodayDate()
-  ordersstatus.value='TOUT'
-  sessionStorage.clear()
-  const otpfirstchar= document.querySelector('[aria-label="Please enter OTP character 1"]')
-  if(otpfirstchar!= null)
-    otpfirstchar.focus()
-}
-const showcommentdialog = ref(false)
-const showalerttwo =ref(false)
-const alerttexttwo = ref('')
-const alertcardclasstwo = ref('')
-async function alertHandlerTwo(data){
-
-      showalerttwo.value = true;
-      switch (data.Prefix) {
-        case "ERROR":
-        case "EMPTY":
-          alerttexttwo.value = data.Message + `  ${data.data}`;
-          alertcardclasstwo.value = "text-center errorclass";
-
-          break;
-        case "INSERT":
-        case "EDIT":
-        case "DELETE":
-        case "UPDATE":
-        
-          alerttexttwo.value = data.Message ;
-          alertcardclasstwo.value = "text-center successclass";
-          await getOrders()
-         
-
-          break;
-        case "SUCCESS":
-        alerttexttwo.value = data.Message ;
-        alertcardclasstwo.value = "text-center successclass";
-          break;
+function statuschanged() {
+  filtredorders.value = [];
+  if (ordersstatus?.value != "TOUT") {
+    orders.value.forEach((order) => {
+      if (order.status == ordersstatus.value) {
+        filtredorders.value.push(order);
       }
-      setTimeout(() => {
-            showalerttwo.value=false
-      }, 4000);
-      
-      
-     
+    });
+
+    return;
+  }
+  filtredorders.value = orders.value;
 }
-async function quitApp(){
+
+async function authOff() {
+  await informServer();
+  authenticated.value = false;
+  selectedwaiter.value = "";
+  startdatemodel.value = getTodayDate();
+  starttimemodel.value = "00:00:00";
+  enddatemodel.value = getTodayDate();
+  ordersstatus.value = "TOUT";
+  sessionStorage.clear();
+  const otpfirstchar = document.querySelector(
+    '[aria-label="Please enter OTP character 1"]'
+  );
+  if (otpfirstchar != null) otpfirstchar.focus();
+}
+const showcommentdialog = ref(false);
+const showalerttwo = ref(false);
+const alerttexttwo = ref("");
+const alertcardclasstwo = ref("");
+async function alertHandlerTwo(data) {
+  showalerttwo.value = true;
+  switch (data.Prefix) {
+    case "ERROR":
+    case "EMPTY":
+      alerttexttwo.value = data.Message + `  ${data.data}`;
+      alertcardclasstwo.value = "text-center errorclass";
+
+      break;
+    case "INSERT":
+    case "EDIT":
+    case "DELETE":
+    case "UPDATE":
+      alerttexttwo.value = data.Message;
+      alertcardclasstwo.value = "text-center successclass";
+      await getOrders();
+
+      break;
+    case "SUCCESS":
+      alerttexttwo.value = data.Message;
+      alertcardclasstwo.value = "text-center successclass";
+      break;
+  }
+  setTimeout(() => {
+    showalerttwo.value = false;
+  }, 4000);
+}
+async function quitApp() {
   if (window.nadilpos) {
     window.nadilpos.showMessage("close");
-    return
+    return;
   }
-  
-  if (window.chrome.webview!=null){
-   
+
+  if (window.chrome.webview != null) {
     window.chrome.webview.postMessage("close");
-    
   }
-  await authOff()
-
-  
+  await authOff();
 }
-async function minimizeApp(){
-  if (window.chrome.webview!=null){
+async function minimizeApp() {
+  if (window.chrome.webview != null) {
     window.chrome.webview.postMessage("minimize");
-    
   }
-
-  
 }
 
-async function getOrders(){
-  filtredorders.value=[]
-  orders.value=[]
-  const form = new FormData()
-  form.append("startdate", startdatemodel.value )
-  form.append("enddate", enddatemodel.value )
-  form.append("starttime", starttimemodel.value)
-  form.append("endtime", endtimemodel.value)
-  await fetch("https://" + getHostName() + "/getOrders", {method:'post', body:form})
-  .then(r=>{
-    if (!r.ok) throw Error(r.statusText)
-    return r.json()
-  })
-  .then(data=>{
-    if (data==null) return
-    orders.value=data
-    
-    if (ordersstatus?.value != "TOUT"){
-      
-      
-      orders.value.forEach(order=>{
-        if (order.status == ordersstatus.value){
-          order.creationdate=formatDateToDDMMYYYYHHMMSS(order.creationdate)
-          filtredorders.value.push(order)
-        }
-
-      })
-      
-      return
-    }
-    orders.value.forEach(order=>{
-       
-      order.creationdate=formatDateToDDMMYYYYHHMMSS(order.creationdate)
-      filtredorders.value.push(order)
-       
-
+async function getOrders() {
+  filtredorders.value = [];
+  orders.value = [];
+  const form = new FormData();
+  form.append("startdate", startdatemodel.value);
+  form.append("enddate", enddatemodel.value);
+  form.append("starttime", starttimemodel.value);
+  form.append("endtime", endtimemodel.value);
+  await fetch("https://" + getHostName() + "/getOrders", { method: "post", body: form })
+    .then((r) => {
+      if (!r.ok) throw Error(r.statusText);
+      return r.json();
     })
-    console.log(orders.value)
-    
-    
-    
-   
-    
-    
-  })
-  .catch(ex=>{
-    console.error(ex)
-  })
-}
-async function showOrdersList(){ 
+    .then((data) => {
+      if (data == null) return;
+      orders.value = data;
 
-  await getOrders()
-  showorderslist.value =! showorderslist.value
- 
- 
-}
-async function informServer(){
-  await fetch ("https://" + getHostName() + "/endsession")
-  
-  .catch(ex=>{console.error(ex)})
-}
-window.addEventListener('beforeunload', () => {
-    document.cookie.split(";").forEach((cookie) => {
-        document.cookie = cookie.replace(
-            /^ +/,
-            ""
-        ).replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
+      if (ordersstatus?.value != "TOUT") {
+        orders.value.forEach((order) => {
+          if (order.status == ordersstatus.value) {
+            order.creationdate = formatDateToDDMMYYYYHHMMSS(order.creationdate);
+            filtredorders.value.push(order);
+          }
+        });
+
+        return;
+      }
+      orders.value.forEach((order) => {
+        order.creationdate = formatDateToDDMMYYYYHHMMSS(order.creationdate);
+        filtredorders.value.push(order);
+      });
+      console.log(orders.value);
+    })
+    .catch((ex) => {
+      console.error(ex);
     });
+}
+async function showOrdersList() {
+  await getOrders();
+  showorderslist.value = !showorderslist.value;
+}
+async function informServer() {
+  await fetch("https://" + getHostName() + "/endsession").catch((ex) => {
+    console.error(ex);
+  });
+}
+window.addEventListener("beforeunload", () => {
+  document.cookie.split(";").forEach((cookie) => {
+    document.cookie = cookie
+      .replace(/^ +/, "")
+      .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
+  });
 });
 
-const sessionstatustext =ref('Commencer')
-const sessionstatusicon =ref('mdi-play')
-const sessionstatusclass=ref('statusplay')
+const sessionstatustext = ref("Commencer");
+const sessionstatusicon = ref("mdi-play");
+const sessionstatusclass = ref("statusplay");
 const sessionsmap = reactive(new Map());
 const sessions = reactive(new Map());
-async function getSessionsStatus(){
-  
-  await fetch("https://" + getHostName() + "/getsessionsstatus",{method:'post'})
-      .then(r=>{
-        if(!r.ok) throw Error(r.statusText)
-          return r.json()
-      })
-      .then(d=>{
-        if (d== null) return
-         
-         d.forEach(session=>{
-          sessions.set(session.username, session)
-          
-          sessionsmap.set(session.username, session.end =="0001-01-01T00:00:00Z" ? false:true)
-          
-          if(session.username == loggeduser.value?.Username){
-            const date = new Date(session.start);
-            const formattedDate = date.toISOString().split('T')[0]
-            const formattedTime = date.toISOString().split('T')[1].slice(0, 5)
-            startdatemodel.value= formattedDate
-            starttimemodel.value=formattedTime
-            if (session.end =="0001-01-01T00:00:00Z"){
-              sessionstatustext.value="Finir"
-              sessionstatusicon.value="mdi-stop"
-              sessionstatusclass.value="statusstop"
-              sessionended.value=true
-              return
-            }
-           
+async function getSessionsStatus() {
+  await fetch("https://" + getHostName() + "/getsessionsstatus", { method: "post" })
+    .then((r) => {
+      if (!r.ok) throw Error(r.statusText);
+      return r.json();
+    })
+    .then((d) => {
+      if (d == null) return;
 
-            sessionstatustext.value="Commencer"
-            sessionstatusicon.value="mdi-play"
-            sessionstatusclass.value="statusplay"
-            sessionended.value=false 
-            return                                  
-          }
-          
-           
-          
-              
-              
-         })
-         
-         if (sessionsmap.get(loggeduser.value?.Username)==undefined){
-            
-            sessionstatustext.value="Commencer"
-            sessionstatusicon.value="mdi-play"
-            sessionstatusclass.value="statusplay"
-            sessionended.value=false 
-            sessionsmap.set(loggeduser.value?.Username,true)
+      d.forEach((session) => {
+        sessions.set(session.username, session);
+
+        sessionsmap.set(
+          session.username,
+          session.end == "0001-01-01T00:00:00Z" ? false : true
+        );
+
+        if (session.username == loggeduser.value?.Username) {
+          const date = new Date(session.start);
+          const formattedDate = date.toISOString().split("T")[0];
+          const formattedTime = date.toISOString().split("T")[1].slice(0, 5);
+          startdatemodel.value = formattedDate;
+          starttimemodel.value = formattedTime;
+          if (session.end == "0001-01-01T00:00:00Z") {
+            sessionstatustext.value = "Finir";
+            sessionstatusicon.value = "mdi-stop";
+            sessionstatusclass.value = "statusstop";
+            sessionended.value = true;
+            return;
           }
 
-      })
-      .catch(ex=>{console.error(ex)})
-      
+          sessionstatustext.value = "Commencer";
+          sessionstatusicon.value = "mdi-play";
+          sessionstatusclass.value = "statusplay";
+          sessionended.value = false;
+          return;
+        }
+      });
+
+      if (sessionsmap.get(loggeduser.value?.Username) == undefined) {
+        sessionstatustext.value = "Commencer";
+        sessionstatusicon.value = "mdi-play";
+        sessionstatusclass.value = "statusplay";
+        sessionended.value = false;
+        sessionsmap.set(loggeduser.value?.Username, true);
+      }
+    })
+    .catch((ex) => {
+      console.error(ex);
+    });
 }
-async function changeSessionStatus(){
-  confirmstartendsessiontext.value = sessionstatustext.value =="Commencer" ? "Voulez-vous continuer et démarrer une nouvelle session?" : "Êtes-vous sûr(e) de vouloir arrêter la session en cours?"
- confirmstartendsessiondialog.value=true
-
-  
-
+async function changeSessionStatus() {
+  confirmstartendsessiontext.value =
+    sessionstatustext.value == "Commencer"
+      ? "Voulez-vous continuer et démarrer une nouvelle session?"
+      : "Êtes-vous sûr(e) de vouloir arrêter la session en cours?";
+  confirmstartendsessiondialog.value = true;
 }
-async function authOK(user){
-  
-  authenticated.value=true
-  loggeduser.value=user
-  await loadSettings()
-  await getSessionsStatus()
-  
-  sessionStorage.setItem("user",JSON.stringify({username:user.Username, role:user.Role }))
-  if (user.Role=='Serveur')
-      selectedwaiter.value = user.Username
-  
+async function authOK(user) {
+  authenticated.value = true;
+  loggeduser.value = user;
+  await loadSettings();
+  await getSessionsStatus();
+
+  sessionStorage.setItem(
+    "user",
+    JSON.stringify({ username: user.Username, role: user.Role })
+  );
+  if (user.Role == "Serveur") selectedwaiter.value = user.Username;
 }
 
-async function openSession(user){
-      
-      let form = new FormData()
-      form.append("user", user)
-      await fetch("https://" + getHostName() + "/opensession", {
-        method:'post',
-        body:form
-      })
-      .then(r=>{
-        if (!r.ok) throw Error(r.statusText)
-        return r.json()
-        
-
-      })
-      .then(async data=>{
-        await loadSettings()
-        await getSessionsStatus()
-      })
-      .catch(ex=>{
-        console.error(ex)
-      })
+async function openSession(user) {
+  let form = new FormData();
+  form.append("user", user);
+  await fetch("https://" + getHostName() + "/opensession", {
+    method: "post",
+    body: form,
+  })
+    .then((r) => {
+      if (!r.ok) throw Error(r.statusText);
+      return r.json();
+    })
+    .then(async (data) => {
+      await loadSettings();
+      await getSessionsStatus();
+    })
+    .catch((ex) => {
+      console.error(ex);
+    });
 }
 document.addEventListener(
   "keydown",
   function (event) {
-    
     keyssaved += event.key;
     lenghtcounter++;
     waiters.value.forEach((w) => {
-      if (keyssaved.substring(0, lenghtcounter) === w.Code && authenticated.value==true && loggeduser.value?.Role=="Gérant" ) {
-        if (w.Role=="Serveur")
-          selectedwaiter.value = w.Username;
-        
-        keyssaved = "";
-        lenghtcounter = 0;
-        return;
-      }
-      if (keyssaved.substring(0, lenghtcounter) === w.Code && authenticated.value==false) {
-        authenticated.value=true
-        if (w.Role=="Serveur")
-          selectedwaiter.value = w.Username;
-        loggeduser.value=w
-        keyssaved = "";
-        lenghtcounter = 0;
-        sessionStorage.setItem("user",JSON.stringify({username:w.Username, role:w.Role }))
-        openSession(w.Username)
-       
-        return;
-      }
+      if (
+        keyssaved.substring(0, lenghtcounter) === w.Code &&
+        authenticated.value == true &&
+        loggeduser.value?.Role == "Gérant"
+      ) {
+        if (w.Role == "Serveur") selectedwaiter.value = w.Username;
 
+        keyssaved = "";
+        lenghtcounter = 0;
+        return;
+      }
+      if (
+        keyssaved.substring(0, lenghtcounter) === w.Code &&
+        authenticated.value == false
+      ) {
+        authenticated.value = true;
+        if (w.Role == "Serveur") selectedwaiter.value = w.Username;
+        loggeduser.value = w;
+        keyssaved = "";
+        lenghtcounter = 0;
+        sessionStorage.setItem(
+          "user",
+          JSON.stringify({ username: w.Username, role: w.Role })
+        );
+        openSession(w.Username);
+
+        return;
+      }
     });
 
     if (event.key == "Enter") {
@@ -2477,33 +2596,28 @@ document.addEventListener(
   },
   true
 );
-let rfidkeystrokes = ""
+let rfidkeystrokes = "";
 function enableRFIDReading() {
   document.addEventListener("keydown", handleRFIDInput);
- 
 }
 
 function disableRFIDReading() {
   document.removeEventListener("keydown", handleRFIDInput);
-  
-  rfidkeystrokes = ""; 
+
+  rfidkeystrokes = "";
 }
 
 function handleRFIDInput(event) {
   if (event.key.length == 1) {
-    rfidkeystrokes+= event.key;
+    rfidkeystrokes += event.key;
   }
 
-  
-  
-  
   if (event.key == "Enter") {
     getSubscriberFromACM(rfidkeystrokes);
     rfidkeystrokes = "";
-      
   }
   setTimeout(() => {
-    rfidkeystrokes= "";
+    rfidkeystrokes = "";
   }, 2000);
 }
 const getSubscriberFromACM = async (rfid) => {
@@ -2520,19 +2634,21 @@ const getSubscriberFromACM = async (rfid) => {
     })
     .then((response) => {
       if (response == null) return;
-      if (response.status =="SUCCESS"){
-        if (response.data.hasValidSubscription == false){
-          alertHandlerTwo({Prefix:"ERROR", Message: "Abonnement non valide", data:""})
-          subscriberInfos.value = null;
+      if (response.status == "SUCCESS") {
+        if (response.data.hasValidSubscription == false) {
+          alertHandlerTwo({
+            Prefix: "ERROR",
+            Message: "Abonnement non valide",
+            data: "",
+          });
+         
           store.Member = null;
-          return
+          return;
         }
-       
-        alertHandlerTwo({Prefix:"SUCCESS", Message: "Abonnement valide", data:""})
-        subscriberInfos.value = response.data;
-        store.Member = response.data;
-       
+
+        alertHandlerTwo({ Prefix: "SUCCESS", Message: "Abonnement valide", data: "" });
         
+        store.Member = response.data;
         
       }
     })
@@ -2541,7 +2657,7 @@ const getSubscriberFromACM = async (rfid) => {
 async function getUsers() {
   waiters.value = [];
   waitersnames.value = [];
-  usersnames.value=[];
+  usersnames.value = [];
   await fetch("https://" + getHostName() + "/getusers")
     .then((r) => {
       if (!r.ok) throw Error(r.statusText);
@@ -2549,91 +2665,103 @@ async function getUsers() {
     })
     .then((data) => {
       users.value = JSON.parse(data);
-      
+
       users.value?.forEach((w) => {
-        usersnames.value.push(w.Username)
-        
-          waiters.value.push({
-            Username: w.Username,
-            Role: w.Role,
-            Code: w.Code,
-          });
-          waitersnames.value.push(w.Username);
-        
+        usersnames.value.push(w.Username);
+
+        waiters.value.push({
+          Username: w.Username,
+          Role: w.Role,
+          Code: w.Code,
+        });
+        waitersnames.value.push(w.Username);
       });
     })
     .catch((e) => console.log(e));
 }
-const confirmcancelorderdialg=ref(false)
-const confirmcancelordertext=ref("")
-const ordertocancel=ref(null)
-function confirmCancelOrder(order){
-  confirmcancelordertext.value="Continuer pour annuler la commande n° : " + order.number + " ?"
-  ordertocancel.value=order
-  confirmcancelorderdialg.value=true
+const confirmcancelorderdialg = ref(false);
+const confirmcancelordertext = ref("");
+const ordertocancel = ref(null);
+function confirmCancelOrder(order) {
+  confirmcancelordertext.value =
+    "Continuer pour annuler la commande n° : " + order.number + " ?";
+  ordertocancel.value = order;
+  confirmcancelorderdialg.value = true;
 }
 async function cancelOrder() {
-  if (ordertocancel.value?.status=="ANNULE"){
-    alertHandlerTwo({Prefix:"ERROR", Message:"Ce ticket est déjà annulé.",data:"CANCELED_ORDER"})
-    return
+  if (ordertocancel.value?.status == "ANNULE") {
+    alertHandlerTwo({
+      Prefix: "ERROR",
+      Message: "Ce ticket est déjà annulé.",
+      data: "CANCELED_ORDER",
+    });
+    return;
   }
-  
-   
-   const form = new FormData() 
-  
-   form.append("number", ordertocancel.value?.number)
-   
-   await fetch ("https://" + getHostName() + "/cancelorder", {method:'post', body: form})
-   .then(r=>{
-          if (!r.ok) throw Error(r.status)
-          return r.json()
-        
+
+  const form = new FormData();
+
+  form.append("number", ordertocancel.value?.number);
+
+  await fetch("https://" + getHostName() + "/cancelorder", { method: "post", body: form })
+    .then((r) => {
+      if (!r.ok) throw Error(r.status);
+      return r.json();
     })
-    .then(data=>{
-      if (data==null) return
-       alertHandlerTwo(data)
-    })
+    .then((data) => {
+      if (data == null) return;
+      alertHandlerTwo(data);
+    });
 }
-const confirmcheckorderdialog =ref(false)
-const confirmcheckordertext =ref("")
-const ordertocheck= ref(false)
-function confirmCheckOrder(order){
-  confirmcheckordertext.value= "Voulez-vous valider le paiement de la commande  N° " +  order.number + " ?"
-  confirmcheckorderdialog.value=true
-  ordertocheck.value=order
+const confirmcheckorderdialog = ref(false);
+const confirmcheckordertext = ref("");
+const ordertocheck = ref(false);
+function confirmCheckOrder(order) {
+  confirmcheckordertext.value =
+    "Voulez-vous valider le paiement de la commande  N° " + order.number + " ?";
+  confirmcheckorderdialog.value = true;
+  ordertocheck.value = order;
 }
-async function checkConfirmation(){
-  if (ordertocheck.value?.status=="ANNULE"){
-    alertHandlerTwo({Prefix:"ERROR", Message:"Ce ticket a été annulé.",data:"CANCELED_ORDER"})
-    return
+async function checkConfirmation() {
+  if (ordertocheck.value?.status == "ANNULE") {
+    alertHandlerTwo({
+      Prefix: "ERROR",
+      Message: "Ce ticket a été annulé.",
+      data: "CANCELED_ORDER",
+    });
+    return;
   }
-  if (ordertocheck.value?.status=="PAYE"){
-    alertHandlerTwo({Prefix:"ERROR", Message:"Ce ticket est déjà payé.",data:"PAID_ORDER"})
-    return
+  if (ordertocheck.value?.status == "PAYE") {
+    alertHandlerTwo({
+      Prefix: "ERROR",
+      Message: "Ce ticket est déjà payé.",
+      data: "PAID_ORDER",
+    });
+    return;
   }
- 
-   const form = new FormData() 
-  
-   form.append("number", ordertocheck.value?.number)
-   form.append("creator", ordertocheck.value?.creator)
-   form.append("waiter", ordertocheck.value?.waiter)
-   await fetch ("https://" + getHostName() + "/checkoutorder", {method:'post', body: form})
-   .then(r=>{
-          if (!r.ok) throw Error(r.status)
-          return r.json()
-        
+
+  const form = new FormData();
+
+  form.append("number", ordertocheck.value?.number);
+  form.append("creator", ordertocheck.value?.creator);
+  form.append("waiter", ordertocheck.value?.waiter);
+  await fetch("https://" + getHostName() + "/checkoutorder", {
+    method: "post",
+    body: form,
+  })
+    .then((r) => {
+      if (!r.ok) throw Error(r.status);
+      return r.json();
     })
-    .then(data=>{
-      if (data==null) return
-       alertHandlerTwo(data)
-    })
+    .then((data) => {
+      if (data == null) return;
+      alertHandlerTwo(data);
+    });
 }
 
-function showContent(item){
-  showcontent.value=true
-  
-  selectedorder.value=item
+function showContent(item) {
+  showcontent.value = true;
 
+  selectedorder.value = item;
 }
 function confirmDeleteUser(user) {
   confirmtext.value =
@@ -2643,7 +2771,7 @@ function confirmDeleteUser(user) {
 }
 async function deleteUser() {
   const form = new FormData();
-  
+
   form.append("id", usertodelete.value.ID);
   await fetch("https://" + getHostName() + "/deleteuser", {
     method: "post",
@@ -2654,7 +2782,6 @@ async function deleteUser() {
       return r.json();
     })
     .then((data) => {
-     
       inform();
       confirmdeleteuderdialog.value = false;
     })
@@ -2668,7 +2795,6 @@ function closeManageUsersDialog(value) {
   isManageUsersDialogOpen.value = value;
 }
 function openEditUsersDialog() {
- 
   isEditUsersDialogOpen.value = !isEditUsersDialogOpen.value;
 }
 function closeEditUsersDialog(value) {
@@ -2694,7 +2820,6 @@ function closeEditProductDialog(value) {
   isEditProductDialogOpen.value = value;
 }
 
-
 window.addEventListener(
   "contextmenu",
   function (e) {
@@ -2703,7 +2828,6 @@ window.addEventListener(
   false
 );
 async function inform() {
-
   await getUsers();
 }
 
@@ -2712,81 +2836,95 @@ function editCategory(cat) {
   isCategoryDialogOpen.value = true;
 }
 function showMenu() {
-  
   rail.value = !rail.value;
   drawer.value = !drawer.value;
 }
-async function printSituation(){
-  if (situationToPrint.value?.sessionend == "0001-01-01T00:00:00Z" || situationToPrint.value?.sessionend == ""){
-    alertHandlerTwo({Prefix:"ERROR",Message:"Votre session n'est pas encore finie. Veuillez mettre fin à la session en cours avant d'imprimer.",data:""})
-    return
+async function printSituation() {
+  if (
+    situationToPrint.value?.sessionend == "0001-01-01T00:00:00Z" ||
+    situationToPrint.value?.sessionend == ""
+  ) {
+    alertHandlerTwo({
+      Prefix: "ERROR",
+      Message:
+        "Votre session n'est pas encore finie. Veuillez mettre fin à la session en cours avant d'imprimer.",
+      data: "",
+    });
+    return;
   }
-  if (situationToPrint.value?.username == undefined){
-    alertHandlerTwo({Prefix:"ERROR",Message:"Vous n'avez aucune session.",data:""})
-    return
+  if (situationToPrint.value?.username == undefined) {
+    alertHandlerTwo({
+      Prefix: "ERROR",
+      Message: "Vous n'avez aucune session.",
+      data: "",
+    });
+    return;
   }
-  const form = new FormData()
-  form.append("situation", JSON.stringify(situationToPrint.value))
+  const form = new FormData();
+  form.append("situation", JSON.stringify(situationToPrint.value));
 
-  
-  await fetch("https://" + getHostName() + "/printsituation", {method:'post', body:form})
-  .then(r=>{
-    if (!r.ok) throw Error(r.statusText)
-    return r.json()
+  await fetch("https://" + getHostName() + "/printsituation", {
+    method: "post",
+    body: form,
   })
-  .then(data=>{
-    if (data == null) return
-    
-  })
-  .catch(ex=>{
-    console.log(ex)
-  })
+    .then((r) => {
+      if (!r.ok) throw Error(r.statusText);
+      return r.json();
+    })
+    .then((data) => {
+      if (data == null) return;
+    })
+    .catch((ex) => {
+      console.log(ex);
+    });
 }
-function getMenuDisabled(btnvalidatedisabled, ticketvalidate,sessionend, isadmin,managerauthorisations, selectedwaiter){
-  if (isadmin) return false
-  if (sessionend) return true
-  if (managerauthorisations.managercancreatetickets ==false && selectedwaiter =="") return true
-  if (btnvalidatedisabled && !ticketvalidate) return true
-  
-
-
-
- 
-
+function getMenuDisabled(
+  btnvalidatedisabled,
+  ticketvalidate,
+  sessionend,
+  isadmin,
+  managerauthorisations,
+  selectedwaiter
+) {
+  if (isadmin) return false;
+  if (sessionend) return true;
+  if (managerauthorisations.managercancreatetickets == false && selectedwaiter == "")
+    return true;
+  if (btnvalidatedisabled && !ticketvalidate) return true;
 }
 </script>
 <script>
-import { getHostName, filtredMenu, initSortable, getSortedFiltredMenu, onUpdatefocused, store} from "./Utils";
+import {
+  getHostName,
+  filtredMenu,
+  initSortable,
+  getSortedFiltredMenu,
+  onUpdatefocused,
+  store,
+} from "./Utils";
 import OrderContentComponent from "./components/OrderContentComponent.vue";
 import ManageUsersDialogComponent from "./components/ManageUsersDialogComponent.vue";
 import EditUsersDialogComponent from "./components/EditUsersDialogComponent.vue";
-import AuthNumPadComponent from "./components/AuthNumPadComponent.vue"
+import AuthNumPadComponent from "./components/AuthNumPadComponent.vue";
 import NewCategoryDialogComponent from "./components/NewCategoryDialogComponent.vue";
 import NewProductDialogComponent from "./components/NewProductDialogComponent.vue";
 import EditProductDialogComponent from "./components/EditProductDialogComponent.vue";
-
 
 let oldtab = 0;
 
 const axios = require("axios").default;
 
-
 export default {
   components: { ManageUsersDialogComponent },
 
   mounted: async function () {
-    
     await this.getCategories();
-    
-   
   },
   data() {
     return {
-    
-
       deleteproductconfirmdialog: false,
-      overlay:true,
-      authenticated_:true,
+      overlay: true,
+      authenticated_: true,
       producttodelete: "",
       ticketvalidate: true,
       showvkeyboard: true,
@@ -2801,7 +2939,7 @@ export default {
       confirmdialog: false,
       adminclass: "adminclasslogout",
       adminloginicon: "mdi-lock",
-      sessionicon:"mdi-play",
+      sessionicon: "mdi-play",
       confirmationtext: "",
       selectedcategory: "",
       alertcardclass: "text-center",
@@ -2812,7 +2950,7 @@ export default {
       isadmin: false,
       paramsdialog: false,
       productdialog: false,
-      sheet:false,
+      sheet: false,
       tab: -1,
       categorytodelete: "",
       input: "",
@@ -2821,19 +2959,28 @@ export default {
       currentelement: null,
       count: 0,
      
-   
+
       categories: [],
       menu: [],
-     
+
       ticket: [
-        { content: [], number: "", totalticket: 0, waiter: '', member: '', memberid: '' },
+        {
+          content: [],
+          number: "",
+          totalticket: 0,
+          discount: 0,
+          waiter: "",
+          member: "",
+          memberid: "",
+        },
       ],
     };
   },
   computed: {
     store() {
-      return store // make it available in template and watchers
-    }
+      return store;
+    },
+   
   },
   watch: {
     tab: async function (val) {
@@ -2846,25 +2993,77 @@ export default {
       }
 
       this.showElements(this.selectedcategory.categoryid);
-    
     },
-   
-   'store.Member': {
+
+    "store.Member": {
       handler(val) {
+        
+        if (val == null) {
+          this.ticket[0].member = "";
+          this.ticket[0].memberid = "";
+          this.ticket[0].discount = 0.00;
+          this.updateTotalTicket();
+          return;
+        }
         if (val != null) {
-          console.log(val)
+          
           this.ticket[0].member = val?.name;
           this.ticket[0].memberid = val?.subscriberId;
-          this.ticket[0].content.forEach(c => {
+          let remainingConsumables = val?.remainingConsumables;
+          let linearticket = [];
+          this.ticket[0].discount = 0.00;
+          this.ticket[0].content.forEach((c) => {
+            
+            
+           
+              for (let i = 0; i < c.count; i++) {
+                  let article = this.menu.find((m) => m.productid == c.id)
+                  linearticket.push({memberdiscount:article?.memberdiscount, goldmemberdiscount:article?.goldmemberdiscount}); 
+              }
           
-            c.price = this.selectPrice(this.menu.find(m => m.productid == c.id))
-          })
-          this.updateTotalTicket()
-          console.log(this.ticket[0])
+            
+            
+           
+
+          });
+          linearticket.sort((a, b) => {
+            if (a.goldmemberdiscount === null) return 1;
+            if (b.goldmemberdiscount === null) return -1;
+            return b.goldmemberdiscount - a.goldmemberdiscount;
+          });
+          
+            linearticket.forEach((c) => {
+              if (val.isGold && remainingConsumables == 0) {
+                if (c.memberdiscount != null) {
+                  this.ticket[0].discount += c.memberdiscount;
+                }
+                
+              }
+              if (val.isGold){
+                if (c.goldmemberdiscount != null && remainingConsumables>=1) {
+                  this.ticket[0].discount += c.goldmemberdiscount;
+                  remainingConsumables--;
+                  console.log("remainingConsumables", remainingConsumables);
+                }
+              }
+              
+             
+              if (!val.isGold) {
+                if (c.memberdiscount != null) {
+                  this.ticket[0].discount += c.memberdiscount;
+                }
+              }
+                
+              
+            });
+          
+          this.updateTotalTicket();
+          
+          
         }
       },
       immediate: true,
-      deep: true
+      deep: true,
     },
     ticket: {
       handler: function (val) {
@@ -2876,22 +3075,18 @@ export default {
   },
 
   methods: {
-   
-    logout(){
-      
-      this.ticket[0].content=[];
-      this.ticket[0].totalticket =0;
-      this.ticket[0].waiter=''
-      this.ticket[0].number=''
-      this.ticketnumber = '';
-      this.isadmin=false
-      this.adminloginicon = "mdi-lock"
-      this.adminclass='adminclasslogout'
-      
-      
+    logout() {
+      this.ticket[0].content = [];
+      this.ticket[0].totalticket = 0;
+      this.ticket[0].waiter = "";
+      this.ticket[0].number = "";
+      this.ticketnumber = "";
+      this.isadmin = false;
+      this.adminloginicon = "mdi-lock";
+      this.adminclass = "adminclasslogout";
     },
     async adminLogin() {
-      const form = new FormData(); 
+      const form = new FormData();
 
       form.append("pwd", this.adminpassword);
       await fetch("https://" + getHostName() + "/adminlogin", {
@@ -2925,36 +3120,39 @@ export default {
     newTicket() {
       this.ticket[0].content = [];
       this.ticket[0].totalticket = 0;
+      this.ticket[0].discount = 0;
       this.ticketvalidate = false;
       this.ticketnumber = "";
-      
-      document.body.focus()
+
+      document.body.focus();
     },
     emptyTicket() {
       this.ticket[0].content = [];
       this.ticket[0].totalticket = 0;
+      this.ticket[0].discount = 0;
     },
     async validateTicket(sessions, ss, authoff) {
-      
-      const inputwaiter= this.$refs.waiterbox.$el.querySelector('[inputmode="none"]')
-      if (inputwaiter.value!=''){
-        
-        
-        if (sessions.get(inputwaiter.value)){
-          this.alertHandler({Prefix:"ERROR", Message:"La session du serveur selectionné n'est pas démarrée.", data:""})
-          return
+      console.log("validateTicket", this.ticket[0]);
+      const inputwaiter = this.$refs.waiterbox.$el.querySelector('[inputmode="none"]');
+      if (inputwaiter.value != "") {
+        if (sessions.get(inputwaiter.value)) {
+          this.alertHandler({
+            Prefix: "ERROR",
+            Message: "La session du serveur selectionné n'est pas démarrée.",
+            data: "",
+          });
+          return;
         }
       }
-      
+
       const hostname = getHostName();
       const form = new FormData();
-      const creator = JSON.parse(sessionStorage.getItem('user')).username
-      
-      
-      this.ticket[0].waiter=inputwaiter.value
+      const creator = JSON.parse(sessionStorage.getItem("user")).username;
+
+      this.ticket[0].waiter = inputwaiter.value;
       form.append("totalticket", this.ticket[0].totalticket);
       form.append("waiter", this.ticket[0].waiter);
-      form.append("creator", creator)
+      form.append("creator", creator);
       form.append("content", JSON.stringify(this.ticket[0].content));
       form.append("member", this.ticket[0].member);
       form.append("memberid", this.ticket[0].memberid);
@@ -2975,12 +3173,10 @@ export default {
           this.btnvalidatedisabled = true;
 
           this.ticketnumber = data.data.padStart(9, 0);
-          if (ss.disconnectmode=="one"){
-            authoff()
-            this.logout()
-            
+          if (ss.disconnectmode == "one") {
+            authoff();
+            this.logout();
           }
-          
         })
         .catch((e) => {
           console.log(e);
@@ -2989,8 +3185,10 @@ export default {
     updateTotalTicket() {
       this.ticket[0].totalticket = 0;
       this.ticket[0].content.forEach((c) => {
-        this.ticket[0].totalticket += c.count * this.selectPrice(this.menu.find(m => m.productid == c.id));
+        this.ticket[0].totalticket +=
+          (c.count * c.price) ;
       });
+      this.ticket[0].totalticket -= this.ticket[0].discount;
     },
     validateInput() {
       const display = document.getElementById("display").innerHTML;
@@ -3035,27 +3233,28 @@ export default {
     getImageURL(i) {
       return "https://" + getHostName() + "/img/" + i;
     },
- 
-    async printReceipt(ss, authoff){
-      const form = new FormData()
-      form.append("number", this.ticketnumber)
 
-      await fetch("https://"+ getHostName()+ "/printreceipt", {method:"post",body:form})
-      .then(r=>{
-        if (!r.ok) throw Error(r.statusText)
-        return r.json()
+    async printReceipt(ss, authoff) {
+      const form = new FormData();
+      form.append("number", this.ticketnumber);
+
+      await fetch("https://" + getHostName() + "/printreceipt", {
+        method: "post",
+        body: form,
       })
-      .then(data=>{
-        
-         if (ss.disconnectmode=="two"){
-            authoff()
-            this.logout()
-            
-        }
-      })
-      .catch(err=>{
-        console.log(err)
-      })
+        .then((r) => {
+          if (!r.ok) throw Error(r.statusText);
+          return r.json();
+        })
+        .then((data) => {
+          if (ss.disconnectmode == "two") {
+            authoff();
+            this.logout();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     getMenu: async function () {
       this.menu = [];
@@ -3065,9 +3264,8 @@ export default {
           return r.json();
         })
         .then((data) => {
-          this.menu = data; 
-          
-         
+          this.menu = data;
+          console.log(data);
         })
         .catch((e) => console.log(e));
     },
@@ -3082,35 +3280,17 @@ export default {
         })
         .catch((e) => console.log(e));
     },
-    selectPrice: function (el) {
-      
-      if (store.Member == null) {
-        return parseFloat(el?.price);
-        
-      }
-      if (store.Member?.isGold && store.Member?.remainingConsumables>0){
-        
-        return el?.goldsubscriberprice ? parseFloat(el?.goldsubscriberprice): parseFloat(el?.price);
-       
-        
-     
-       
-      }
-      return el?.subscriberprice ? parseFloat(el?.subscriberprice): parseFloat(el?.price);
-    },
 
     elementClick: function (el) {
-      
-      
+      store.Member = null;
       if (this.isadmin) {
         this.actiononproduct = true;
 
         return;
       }
       let found = false;
-      this.ticket[0].totalticket =
-        this.ticket[0].totalticket + this.selectPrice(el);
-      
+      this.ticket[0].totalticket = this.ticket[0].totalticket + parseFloat(el.price);
+
       this.ticket[0].content.forEach((e) => {
         if (e.id == el.productid) {
           e.count++;
@@ -3123,15 +3303,15 @@ export default {
           id: el.productid,
           count: 1,
           text: el.text,
-          price: this.selectPrice(el),
-          categoryid : el.category,
+          price: el.price,
+          categoryid: el.category,
           comment: "",
         });
 
       var listticket = document.getElementById("listticket");
       listticket.lastElementChild.scrollIntoView(false);
     },
-    
+
     async alertHandler(data) {
       this.showalert = true;
       switch (data.Prefix) {
@@ -3154,26 +3334,28 @@ export default {
           break;
       }
       await this.getCategories();
-    
+
       await this.getMenu();
-      if (oldtab == 0 && (data.Message != "La catrégorie a été enregistrée" || data.Message!="La catrégorie a été modifiée") ) {
+      if (
+        oldtab == 0 &&
+        (data.Message != "La catrégorie a été enregistrée" ||
+          data.Message != "La catrégorie a été modifiée")
+      ) {
         this.showFavorites();
         return;
       }
       this.tab = oldtab;
       this.showElements(this.selectedcategory.categoryid);
       setTimeout(() => {
-            this.showalert=false
+        this.showalert = false;
       }, 3000);
     },
     async showElements(catID) {
       if (catID != "") {
         this.selectedcategoryID = catID;
       }
-      
-      if (this.menu.length == 0)  
-        await this.getMenu();
 
+      if (this.menu.length == 0) await this.getMenu();
 
       filtredMenu.value = [];
       this.menu.forEach((e) => {
@@ -3182,30 +3364,29 @@ export default {
         }
       });
       initSortable(catID);
-      if (localStorage.getItem("filtredMenu" + catID)){
+      if (localStorage.getItem("filtredMenu" + catID)) {
         filtredMenu.value = getSortedFiltredMenu(catID);
-        return
+        return;
       }
       localStorage.setItem("filtredMenu" + catID, JSON.stringify(filtredMenu.value));
     },
     async showFavorites() {
       filtredMenu.value = [];
-     
-     
-      
+
       this.menu.forEach((e) => {
         if (e.isfavorite == true) {
           filtredMenu.value.push(e);
         }
       });
       initSortable(-1);
-      if (localStorage.getItem("filtredMenu-1")){
+      if (localStorage.getItem("filtredMenu-1")) {
         filtredMenu.value = getSortedFiltredMenu(-1);
-        return
+        return;
       }
       localStorage.setItem("filtredMenu-1", JSON.stringify(filtredMenu.value));
     },
     removeFromTicket: function (id) {
+      store.Member = null;
       this.ticket[0].content.forEach((e, i) => {
         if (e.id == id) {
           this.ticket[0].content.splice(i, 1);
@@ -3217,8 +3398,10 @@ export default {
     increaseCount: function (e) {
       e.count++;
       this.ticket[0].totalticket += parseFloat(e.price);
+      store.Member = null;
     },
     reduceCount: function (e) {
+      
       if (e.count == 1) {
         e.count--;
         this.ticket[0].totalticket -= parseFloat(e.price);
@@ -3228,6 +3411,7 @@ export default {
 
       e.count--;
       this.ticket[0].totalticket -= parseFloat(e.price);
+      store.Member = null;
     },
     showTicketOnLowResolution() {
       this.sheet = true;
@@ -3243,7 +3427,7 @@ export default {
       this.isadmin = false;
       this.adminclass = "adminclasslogout";
       this.adminloginicon = "mdi-lock";
-      func()
+      func();
     },
     showAddNewProductDialog() {
       oldtab = this.tab;
@@ -3285,21 +3469,19 @@ export default {
       this.deleteproductconfirmdialog = true;
       this.confirmationtext = `Etes-vous sûr de vouloir supprimer le produit ${element.text}? `;
     },
-
   },
 };
 </script>
 <style>
 .situation {
-    display: flex;
-    color: black;
-    justify-content: center; 
-    align-items: center;    
-    width: 400px;
-    
+  display: flex;
+  color: black;
+  justify-content: center;
+  align-items: center;
+  width: 400px;
 }
-.v-main{
-  --v-layout-bottom : 0px;
+.v-main {
+  --v-layout-bottom: 0px;
 }
 .errorclass {
   background-color: chocolate;
@@ -3320,11 +3502,11 @@ export default {
 .adminclasslogout {
   color: darkred;
 }
-.statusplay{
-  color:rgb(50, 112, 31);
+.statusplay {
+  color: rgb(50, 112, 31);
 }
-.statusstop{
-  color:rgb(112, 31, 31);
+.statusstop {
+  color: rgb(112, 31, 31);
 }
 .v-card-actions {
   display: inline !important;
@@ -3342,7 +3524,7 @@ export default {
   user-select: none;
 }
 .IMPAYE {
-  background-color:orangered;
+  background-color: orangered;
   text-align: center;
 }
 .PAYE {
@@ -3350,8 +3532,8 @@ export default {
   text-align: center;
 }
 .ANNULE {
- background-color: #888;
-text-align: center;
+  background-color: #888;
+  text-align: center;
 }
 .menu {
   width: 65%;
@@ -3370,10 +3552,9 @@ text-align: center;
   height: 120px;
   width: 80px;
 }
-.card-element-no-drag{
+.card-element-no-drag {
   height: 120px;
   width: 80px;
-  
 }
 .card-element-image {
   height: 90px;
@@ -3390,8 +3571,6 @@ text-align: center;
   margin-bottom: 20px;
   background-color: #ffffff;
 }
-
-
 
 .display {
   width: 145px;
@@ -3443,47 +3622,45 @@ text-align: center;
 .keyboarddialog {
   max-width: 750px;
 }
-@media only screen and (max-width:1900px){
+@media only screen and (max-width: 1900px) {
   .v-col-md-2 {
     flex: 0 0 16.6666666667%;
     max-width: 20% !important;
-}
+  }
 
-.v-container {
-        max-width: 100%;
-    }
+  .v-container {
+    max-width: 100%;
+  }
 }
 
 @media only screen and (max-width: 757px) {
   .v-col-md-2 {
     flex: 0 0 16.6666666667%;
     max-width: 40% !important;
+  }
+  .v-bottom-navigation .v-bottom-navigation__content > .v-btn {
+    width: 50px;
+  }
+  body {
+    margin-right: 5px;
+    margin-left: 5px;
+  }
 
-}
-.v-bottom-navigation .v-bottom-navigation__content>.v-btn {
-  width:50px;
-}
-body {
-  margin-right:5px;
-  margin-left:5px;
-}
-  
-.bottomnavbutton span {
-  font-size: 9px;
-  
-}
-  .NOMOBILE{
-    display:none;
+  .bottomnavbutton span {
+    font-size: 9px;
+  }
+  .NOMOBILE {
+    display: none;
   }
   .menu {
     width: 100%;
   }
   .situation {
-   width: 100vw;
-   left:0%;
-   max-width: 100%;
+    width: 100vw;
+    left: 0%;
+    max-width: 100%;
   }
- 
+
   .keyboarddialog {
     display: none;
   }
@@ -3505,13 +3682,13 @@ body {
   }
 }
 input[type="date"] {
-      background-color: #1e1e1e;
-      color: #ffffff;
-      border: 1px solid #333;
-      border-radius: 5px;
-      padding: 10px;
-      font-size: 12px;
-      outline: none;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border: 1px solid #333;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 12px;
+  outline: none;
 }
 select {
   background-color: #333;
@@ -3534,15 +3711,13 @@ option {
 
 option:hover {
   background-color: #555;
-  
 }
-.v-selection-control .v-label{
+.v-selection-control .v-label {
   font-size: 12px !important;
 }
 .v-col-md-2 {
   flex: 0 0 16.6666666667%;
   max-width: 10%;
-
 }
 .d-flex {
   display: flex;
@@ -3570,11 +3745,10 @@ option:hover {
 .highlighted {
   color: chocolate;
 }
-.active{
+.active {
   color: darkseagreen;
 }
-.inactive{
+.inactive {
   color: darkred;
 }
 </style>
-``` 

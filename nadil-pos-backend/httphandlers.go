@@ -1375,7 +1375,7 @@ func (server *Server) getMenu(w http.ResponseWriter, r *http.Request) {
 	var product Product
 	for rows.Next() {
 
-		err := rows.Scan(&product.Productid, &product.Isfavorite, &product.Name, &product.Category, &product.Price, &product.Image, &product.Subscriberprice, &product.Goldsubscriberprice)
+		err := rows.Scan(&product.Productid, &product.Isfavorite, &product.Name, &product.Category, &product.Price, &product.Image, &product.Subscriberprice, &product.Goldsubscriberprice, &product.SubscriberDiscount, &product.GoldSubscriberDiscount)
 
 		if err != nil {
 			log.Fatalln(err)

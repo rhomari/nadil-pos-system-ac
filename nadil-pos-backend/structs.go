@@ -10,14 +10,16 @@ type Category struct {
 	Category_name string `json:"categoryname"`
 }
 type Product struct {
-	Productid           int     `json:"productid"`
-	Isfavorite          bool    `json:"isfavorite"`
-	Name                string  `json:"text"`
-	Category            int     `json:"category"`
-	Image               string  `json:"image"`
-	Price               string  `json:"price"`
-	Subscriberprice     *string `json:"subscriberprice"`
-	Goldsubscriberprice *string `json:"goldsubscriberprice"`
+	Productid              int      `json:"productid"`
+	Isfavorite             bool     `json:"isfavorite"`
+	Name                   string   `json:"text"`
+	Category               int      `json:"category"`
+	Image                  string   `json:"image"`
+	Price                  string   `json:"price"`
+	Subscriberprice        *string  `json:"subscriberprice"`
+	Goldsubscriberprice    *string  `json:"goldsubscriberprice"`
+	SubscriberDiscount     *float32 `json:"memberdiscount"`
+	GoldSubscriberDiscount *float32 `json:"goldmemberdiscount"`
 }
 type Response struct {
 	Prefix  string `json:"Prefix"`
